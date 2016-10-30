@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/header"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        card_view:cardCornerRadius="4dp"
+        >
+
+
+
+        <LinearLayout
+            android:id="@+id/topright"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@drawable/shape"
+            android:layout_row="1"
+            android:layout_column="0">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/ic_round"
+                android:contentDescription=""
+                android:id="@+id/slot1" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/ic_round"
+                android:contentDescription=""
+                android:id="@+id/slot2" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription=""
+                app:srcCompat="@mipmap/ic_round"
+                android:id="@+id/slot3" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:contentDescription=""
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/ic_round"
+                android:id="@+id/slot4" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:contentDescription=""
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/ic_round"
+                android:id="@+id/slot5" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:contentDescription=""
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/ic_round"
+                android:id="@+id/slot6" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:contentDescription=""
+                android:layout_height="wrap_content"
+                app:srcCompat="@mipmap/ic_round"
+                android:id="@+id/slot7" />
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/body"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/header"
+        card_view:cardCornerRadius="4dp">
+        <LinearLayout
+            android:id="@+id/topleft"
+            android:background="@drawable/shape"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/myimage1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_b" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/header"
+        android:layout_marginBottom="-32dp"
+        android:layout_marginRight="20dp"
+        />
+
+</RelativeLayout>

@@ -21,4 +21,5 @@
     <string name="location_permission_denied">permission denied</string>
     <string name="permission_required_toast">permission is required</string>
     <string name="permission_rationale_location">prl</string>
+    <string name="title_activity_scrabble">ScrabbleActivity</string>
 </resources>

@@ -312,7 +312,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             int res_state = m.login(mEmail, mPassword);
             if (res_state == 1) {
                 return true;
-            } else if (res_state == 2) {
+            } else if (res_state == 0) {
                 int reg_stat = m.register(mEmail, mPassword);
                 if (reg_stat == 1) {
 
@@ -336,6 +336,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
+
                 finish();
             } else {
                 mPasswordView.setError(errmsg);

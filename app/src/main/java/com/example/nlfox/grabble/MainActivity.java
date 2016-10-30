@@ -1,7 +1,9 @@
 package com.example.nlfox.grabble;
 
 import android.Manifest;
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -16,10 +18,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.content.Intent;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -62,10 +65,13 @@ import java.io.IOException;
  * Permission for {@link android.Manifest.permission#ACCESS_FINE_LOCATION} is requested at run
  * time. If the permission has not been granted, the Activity is finished with an error message.
  */
+
+
 public class MainActivity extends AppCompatActivity
         implements
         OnMyLocationButtonClickListener,
         OnMapReadyCallback,
+        GoogleMap.OnMarkerClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
 
     /**
@@ -82,6 +88,7 @@ public class MainActivity extends AppCompatActivity
     private boolean mPermissionDenied = false;
 
     private GoogleMap mMap;
+    private boolean firstOpen = true;
 
     public GoogleMap getMap() {
         return mMap;
@@ -148,13 +155,25 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = new Intent(this, SplashActivity.class);
+        startActivity(intent);
         setContentView(R.layout.activity_main);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        Button btn = (Button) findViewById(R.id.button3);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getBaseContext(), ScrabbleActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
@@ -171,7 +190,6 @@ public class MainActivity extends AppCompatActivity
         uiSettings.setScrollGesturesEnabled(false);
         uiSettings.setZoomControlsEnabled(false);
         uiSettings.setMapToolbarEnabled(false);
-
 
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -191,9 +209,14 @@ public class MainActivity extends AppCompatActivity
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
                 LatLng coordinate = new LatLng(latitude, longitude);
-                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 20);
-                getMap().animateCamera(yourLocation);
+                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 19);
+                if (firstOpen) {
+                    getMap().moveCamera(yourLocation);
+                    firstOpen = false;
 
+                } else {
+                    getMap().animateCamera(yourLocation);
+                }
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -245,7 +268,7 @@ public class MainActivity extends AppCompatActivity
         // Setting an info window adapter allows us to change the both the contents and look of the
         // info window.
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
-
+        mMap.setOnMarkerClickListener(this);
 
     }
 
@@ -298,6 +321,30 @@ public class MainActivity extends AppCompatActivity
             showMissingPermissionError();
             mPermissionDenied = false;
         }
+    }
+
+
+    public boolean onMarkerClick(final Marker marker) {
+
+        // Retrieve the data from the marker.
+
+        Integer clickCount = (Integer) marker.getTag();
+        clickCount = 1;
+        // Check if a click count was set, then display the click count.
+
+        Bundle args = new Bundle();
+
+
+        FragmentManager fm = getFragmentManager();
+        InfoDialog dialogFragment = new InfoDialog();
+        dialogFragment.setMarker(marker);
+
+        dialogFragment.show(fm, "Sample Fragment");
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return true;
     }
 
     /**

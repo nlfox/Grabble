@@ -22,9 +22,10 @@ import okhttp3.Response;
 
 public class WebModel {
     private static OkHttpClient client = null;
-    private static String site = "http://192.168.57.1:5000/";
+    private static String site = "http://192.168.137.140:5000/";
     private static String token;
     private Context c;
+
     class Message {
         public String message;
         public int code;
@@ -38,6 +39,9 @@ public class WebModel {
         }
     }
 
+    String getToken() {
+        return token;
+    }
 
     String get(String url) throws IOException {
         Request request = new Request.Builder()
@@ -104,6 +108,7 @@ public class WebModel {
         Gson obj = new Gson();
         Message msgObj = obj.fromJson(res, Message.class);
         token = msgObj.message;
+        SpUtils.putString(c, "token", token);
         return msgObj.code;
     }
 

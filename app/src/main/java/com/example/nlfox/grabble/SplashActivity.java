@@ -28,9 +28,9 @@ public class SplashActivity extends Activity {
 
             @Override
             public void run() {
-                enterHomeActivity();
+                finish();
             }
-        }, 2000);
+        }, 500);
     }
 
     private void enterHomeActivity() {
