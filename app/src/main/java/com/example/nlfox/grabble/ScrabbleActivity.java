@@ -18,13 +18,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import org.apmem.tools.layouts.FlowLayout;
+
 public class ScrabbleActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrabble);
-        String[] letter_list = new String[]{"a", "b", "a", "b"};
+        String[] letter_list = new String[]{"a", "b", "a", "b","a", "b","a", "b"};
         for (String i : letter_list) {
             ImageView imageView = new ImageView(getBaseContext());
             imageView.setImageResource(getResources().getIdentifier("ic_" + i, "mipmap", this.getPackageName()));
@@ -92,10 +94,8 @@ public class ScrabbleActivity extends AppCompatActivity {
                     // do nothing
                     break;
                 case DragEvent.ACTION_DRAG_ENTERED:
-                    v.setBackground(enterShape);
                     break;
                 case DragEvent.ACTION_DRAG_EXITED:
-                    v.setBackground(normalShape);
                     break;
                 case DragEvent.ACTION_DROP:
                     // Dropped, reassign View to ViewGroup
@@ -103,12 +103,11 @@ public class ScrabbleActivity extends AppCompatActivity {
                     ViewGroup owner = (ViewGroup) view.getParent();
 //                    view.getParent().getClass().equals(ImageView.class);
                     owner.removeView(view);
-                    LinearLayout container = (LinearLayout) v;
+                    FlowLayout container = (FlowLayout) v;
                     container.addView(view);
                     view.setVisibility(View.VISIBLE);
                     break;
                 case DragEvent.ACTION_DRAG_ENDED:
-                    v.setBackground(normalShape);
                 default:
                     break;
             }

@@ -27,7 +27,7 @@
             android:name=".SplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_splash"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/Theme.Design.NoActionBar" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
@@ -39,7 +39,10 @@
         <activity
             android:name=".ScrabbleActivity"
             android:label="@string/title_activity_scrabble"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>
