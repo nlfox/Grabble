@@ -5,16 +5,24 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
@@ -165,14 +173,25 @@ public class MainActivity extends AppCompatActivity
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        Button btn = (Button) findViewById(R.id.button3);
-        btn.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton grabbleBtn = (FloatingActionButton) findViewById(R.id.grabble);
+        grabbleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), ScrabbleActivity.class);
                 startActivity(intent);
             }
         });
+        VectorDrawable custom_marker = (VectorDrawable) getResources().getDrawable(R.drawable.marker_a);
+
+        FloatingActionButton settingButton = (FloatingActionButton) findViewById(R.id.settings);
+        settingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getBaseContext(), InfoActivity.class);
+                startActivity(intent);
+            }
+        });
+
 
     }
 
@@ -261,7 +280,8 @@ public class MainActivity extends AppCompatActivity
                         .position(point)
                         .title(placeMark.getProperty("name"))
                         .snippet(placeMark.getProperty("description"))
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                        //.icon(BitmapDescriptorFactory.defaultMarker()));
+                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.m_unknown)));
             }
 
         }
@@ -272,6 +292,20 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
+        Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, drawableId);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = (DrawableCompat.wrap(drawable)).mutate();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
     /**
      * Enables the My Location layer if the fine location permission has been granted.
      */

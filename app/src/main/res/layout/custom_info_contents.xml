@@ -14,6 +14,7 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -30,44 +31,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textColor="#ff000000"
-            android:textSize="14dp"
-            android:textStyle="bold" />
+        <ImageView
+            android:layout_width="207dp"
+            android:layout_height="240dp"
+            android:src="@mipmap/m_unknown"
+            />
 
-        <TextView
-            android:id="@+id/snippet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textColor="#ff7f7f7f"
-            android:textSize="14dp" />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="top"
-            />
         <Button
             android:id="@+id/buttonCollect"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="send" />
+            android:layout_gravity="center"
+
+            android:text="Collect" />
 
 
     </LinearLayout>

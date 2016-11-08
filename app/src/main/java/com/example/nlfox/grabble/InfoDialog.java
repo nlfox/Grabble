@@ -25,7 +25,7 @@ public class InfoDialog extends DialogFragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.custom_info_contents, container, false);
-        getDialog().setTitle("Simple Dialog");
+        getDialog().setTitle(marker.getTitle());
 
         Button btn = (Button) rootView.findViewById(R.id.buttonCollect);
         btn.setOnClickListener(this);
