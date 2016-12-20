@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -25,12 +26,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Intent;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,6 +44,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.kml.KmlGeometry;
@@ -191,7 +196,34 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
 
+            requestLocationPermission();
+
+        } else {
+            Log.i("Grabble",
+                    "CAMERA permission has already been granted. Displaying camera preview.");
+        }
+
+
+    }
+
+    private void requestLocationPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) && ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    0);
+
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},
+                    0);
+        }
 
     }
 
@@ -204,6 +236,8 @@ public class MainActivity extends AppCompatActivity
                 getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         // set zoom
+        boolean success = mMap.setMapStyle(new MapStyleOptions(getResources()
+                .getString(R.string.style_json)));
         UiSettings uiSettings = getMap().getUiSettings();
         uiSettings.setZoomGesturesEnabled(false);
         uiSettings.setScrollGesturesEnabled(false);
@@ -306,6 +340,7 @@ public class MainActivity extends AppCompatActivity
 
         return bitmap;
     }
+
     /**
      * Enables the My Location layer if the fine location permission has been granted.
      */
@@ -372,6 +407,8 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fm = getFragmentManager();
         InfoDialog dialogFragment = new InfoDialog();
         dialogFragment.setMarker(marker);
+        dialogFragment.setView( findViewById(R.id
+                .layout));
 
         dialogFragment.show(fm, "Sample Fragment");
 
