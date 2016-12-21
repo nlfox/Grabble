@@ -29,7 +29,6 @@ public class InfoDialog extends DialogFragment implements View.OnClickListener {
         v = vm;
         return true;
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.custom_info_contents, container, false);

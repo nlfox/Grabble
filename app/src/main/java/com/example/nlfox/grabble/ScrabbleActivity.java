@@ -13,45 +13,57 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ScrabbleActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ArrayList<Character> letter_list;
+    private DataHolder dataHolder;
+
+
+    private void resetCharList() {
+        ((ViewGroup) findViewById(R.id.topleft)).removeAllViews();
+        HashMap<Character, Integer> letter_map = DataHolder.getInstance().getLetters();
+
+        for (char i : letter_map.keySet()) {
+            for (int j = 0; j < letter_map.get(i); j++) {
+                ImageView imageView = new ImageView(getBaseContext());
+                imageView.setTag(i);
+                imageView.setImageResource(getResources().getIdentifier("ic_" + Character.toString(i), "mipmap", this.getPackageName()));
+                imageView.setOnTouchListener(new MyTouchListener());
+                ((ViewGroup) findViewById(R.id.topleft)).addView(imageView);
+                imageView.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private void initBlank(){
+        for (int i = 1; i <= 7; i++) {
+            View v = findViewById(getResources().getIdentifier("slot" + Integer.toString(i), "id", this.getPackageName()));
+            v.setOnDragListener(new ReplaceDragListener());
+            v.setTag(-1);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrabble);
-        letter_list = new ArrayList<Character>();
-        //dummy data for test
-        letter_list.add('a');
-        letter_list.add('b');
-        letter_list.add('a');
-        letter_list.add('b');
-        letter_list.add('a');
-        letter_list.add('b');
-        letter_list.add('a');
-        letter_list.add('b');
+//        dataHolder = DataHolder.getInstance();
+//        dataHolder.addLetter('a');
+//        dataHolder.addLetter('a');
+//        dataHolder.addLetter('a');
+//        dataHolder.addLetter('a');
+//        dataHolder.addLetter('b');
+//        dataHolder.addLetter('b');
+//        dataHolder.addLetter('b');
+//        dataHolder.addLetter('b');
 
-        for (char i : letter_list) {
-            ImageView imageView = new ImageView(getBaseContext());
-            imageView.setTag(i);
-            imageView.setImageResource(getResources().getIdentifier("ic_" + Character.toString(i), "mipmap", this.getPackageName()));
-            imageView.setOnTouchListener(new MyTouchListener());
-            ((ViewGroup) findViewById(R.id.topleft)).addView(imageView);
-            imageView.setVisibility(View.VISIBLE);
-        }
+        resetCharList();
+        initBlank();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
-        for (int i = 1; i <= 7; i++) {
-            View v = findViewById(getResources().getIdentifier("slot" + Integer.toString(i), "id", this.getPackageName()));
-            v.setOnDragListener(new ReplaceDragListener());
-            v.setTag(-1);
-            //v.setOnTouchListener(new ReplaceTouchListener());
-        }
+
 
     }
 
@@ -64,22 +76,12 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public boolean onItemClicked(MenuItem item) {
-        ((ViewGroup) findViewById(R.id.topleft)).removeAllViews();
-        for (char i : letter_list) {
-            ImageView imageView = new ImageView(getBaseContext());
-            imageView.setTag(i);
-            imageView.setImageResource(getResources().getIdentifier("ic_" + Character.toString(i), "mipmap", this.getPackageName()));
-            imageView.setOnTouchListener(new MyTouchListener());
-
-            ((ViewGroup) findViewById(R.id.topleft)).addView(imageView);
-            imageView.setVisibility(View.VISIBLE);
-        }
         for (int i = 1; i <= 7; i++) {
             View v = findViewById(getResources().getIdentifier("slot" + Integer.toString(i), "id", this.getPackageName()));
             ((ImageView) v).setImageResource(R.mipmap.ic_round);
             v.setTag(-1);
-            //v.setOnTouchListener(new ReplaceTouchListener());
         }
+        resetCharList();
         return true;
     }
 
@@ -87,9 +89,6 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.action_refresh: {
-                break;
-            }
             case R.id.fab: {
                 for (int i = 1; i <= 7; i++) {
                     View v = findViewById(getResources().getIdentifier("slot" + Integer.toString(i), "id", this.getPackageName()));
@@ -118,10 +117,10 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-
     class ReplaceDragListener implements View.OnDragListener {
 
         private boolean containsDragable;
+
         @Override
         public boolean onDrag(View view, DragEvent dragEvent) {
             int dragAction = dragEvent.getAction();

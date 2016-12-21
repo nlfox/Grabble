@@ -25,7 +25,7 @@ public class WebModel {
     private static String site = "http://192.168.137.140:5000/";
     private static String token;
     private Context c;
-
+    private final static
     class Message {
         public String message;
         public int code;

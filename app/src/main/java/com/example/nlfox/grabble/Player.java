@@ -1,5 +1,6 @@
 package com.example.nlfox.grabble;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -9,4 +10,7 @@ import java.util.HashMap;
 public class Player {
     public String name;
     public String token;
+    public Integer score;
+    public ArrayList<Character> charList;
+
 }
