@@ -37,7 +37,6 @@ public class SplashActivity extends AwesomeSplash {
 //        configSplash.setPathSplashStrokeColor(R.color.strokeColor); //any color you want form colors.xml
 //        configSplash.setAnimPathFillingDuration(3000);
 //        configSplash.setPathSplashFillColor(R.color.fillColor); //path object filling color
-//
 
         //Customize Title
         configSplash.setTitleSplash("Grabble");

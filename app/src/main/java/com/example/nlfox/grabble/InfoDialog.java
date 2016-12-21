@@ -45,7 +45,7 @@ public class InfoDialog extends DialogFragment implements View.OnClickListener {
         marker.setVisible(false);
         getActivity().getFragmentManager().beginTransaction().remove(this).commit();
         Snackbar snackbar = Snackbar
-                .make(v, "Had a snack at Snackbar", Snackbar.LENGTH_LONG);
+                .make(v, "a new letter collected", Snackbar.LENGTH_SHORT);
         snackbar.setActionTextColor(Color.RED);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(Color.DKGRAY);
