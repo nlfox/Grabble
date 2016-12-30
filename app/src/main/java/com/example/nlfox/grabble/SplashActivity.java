@@ -3,6 +3,7 @@ package com.example.nlfox.grabble;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -10,6 +11,8 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.viksaa.sssplash.lib.activity.AwesomeSplash;
 import com.viksaa.sssplash.lib.cnst.Flags;
 import com.viksaa.sssplash.lib.model.ConfigSplash;
+
+import java.io.IOException;
 
 public class SplashActivity extends AwesomeSplash {
 
@@ -44,20 +47,40 @@ public class SplashActivity extends AwesomeSplash {
         configSplash.setTitleTextSize(30f); //float value
         configSplash.setAnimTitleDuration(3000);
         configSplash.setAnimTitleTechnique(Techniques.FlipInX);
+        InitTask initTask = new InitTask();
+        initTask.execute();
     }
 
     public void animationsFinished() {
 
-        boolean isFirstOpen = new WebModel(getApplicationContext()).has_token();
+        boolean isFirstOpen = GrabbleApplication.getAppContext(getApplication()).getWebModel().has_token();
         // if first start, go to login activity
-        if (false) {
+        if (GrabbleApplication.getAppContext(getApplication()).getWebModel().has_token()) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-            finish();
-            return;
+            //finish();
+            //return;
+        } else {
+            //finish();
         }
-        else{
+    }
+
+    private class InitTask extends AsyncTask<Object, Void, Boolean> {
+        protected Boolean doInBackground(Object... params) {
+            try {
+
+                GrabbleApplication.getAppContext(getApplication()).initialize();
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean result) {
             finish();
         }
+
     }
 }

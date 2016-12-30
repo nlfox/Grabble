@@ -2,6 +2,7 @@ package com.example.nlfox.grabble;
 
 import android.content.SharedPreferences;
 
+import com.google.android.gms.maps.model.Marker;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -22,10 +23,10 @@ import okhttp3.Response;
 
 public class WebModel {
     private static OkHttpClient client = null;
-    private static String site = "http://192.168.137.140:5000/";
+    private static String site = "http://192.168.56.1:5000/";
     private static String token;
     private Context c;
-    private final static
+
     class Message {
         public String message;
         public int code;
@@ -43,9 +44,23 @@ public class WebModel {
         return token;
     }
 
+    String collectPoint(String letter, String point) throws IOException {
+        // TODO: 12/23/16
+        Map<String, String> paras = new HashMap<>();
+        paras.put("point", point);
+        paras.put("letter", letter);
+        return post(site + "letter/add", paras);
+    }
+
+    String makeWord(String word) throws IOException {
+        Map<String, String> paras = new HashMap<>();
+        paras.put("word", word);
+        return post(site + "letter/word", paras);
+    }
+
     String get(String url) throws IOException {
         Request request = new Request.Builder()
-                .url(url)
+                .url(site + url + "?token=" + token)
                 .build();
 
         Response response = client.newCall(request).execute();
@@ -68,7 +83,7 @@ public class WebModel {
 
 
         Request request = new Request.Builder()
-                .url(url)
+                .url(url + "?token=" + token)
                 .post(formBodyBuilder.build())
                 .build();
         Response response = client.newCall(request).execute();

@@ -110,63 +110,6 @@ public class MainActivity extends AppCompatActivity
     /**
      * Demonstrates customizing the info window and/or its contents.
      */
-    class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
-
-        // These are both viewgroups containing an ImageView with id "badge" and two TextViews with id
-        // "title" and "snippet".
-        private final View mWindow;
-
-        private final View mContents;
-
-        CustomInfoWindowAdapter() {
-            mWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-            mContents = getLayoutInflater().inflate(R.layout.custom_info_contents, null);
-        }
-
-        @Override
-        public View getInfoWindow(Marker marker) {
-            render(marker, mWindow);
-            return mWindow;
-        }
-
-        @Override
-        public View getInfoContents(Marker marker) {
-            render(marker, mContents);
-            return mContents;
-        }
-
-        private void render(Marker marker, View view) {
-            int badge;
-            // Use the equals() method on a Marker to check for equals.  Do not use ==.
-
-            // Passing 0 to setImageResource will clear the image view.
-            badge = 0;
-
-            ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
-
-            String title = marker.getTitle();
-            TextView titleUi = ((TextView) view.findViewById(R.id.title));
-            if (title != null) {
-                // Spannable string allows us to edit the formatting of the text.
-                SpannableString titleText = new SpannableString(title);
-                titleText.setSpan(new ForegroundColorSpan(Color.RED), 0, titleText.length(), 0);
-                titleUi.setText(titleText);
-            } else {
-                titleUi.setText("");
-            }
-
-            String snippet = marker.getSnippet();
-            TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
-            if (snippet != null && snippet.length() > 12) {
-                SpannableString snippetText = new SpannableString(snippet);
-                snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, 10, 0);
-                snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, snippet.length(), 0);
-                snippetUi.setText(snippetText);
-            } else {
-                snippetUi.setText("");
-            }
-        }
-    }
 
 
     @Override
@@ -186,8 +129,6 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-        VectorDrawable custom_marker = (VectorDrawable) getResources().getDrawable(R.drawable.marker_a);
-
         FloatingActionButton settingButton = (FloatingActionButton) findViewById(R.id.settings);
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,7 +162,7 @@ public class MainActivity extends AppCompatActivity
                     0);
 
         } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                     0);
         }
 
@@ -307,39 +248,35 @@ public class MainActivity extends AppCompatActivity
         }
 
         for (KmlPlacemark placeMark : kmlLayer.getPlacemarks()) {
+
             KmlGeometry g = placeMark.getGeometry();
+
             if (g.getGeometryType().equals("Point")) {
                 LatLng point = (LatLng) g.getGeometryObject();
-                getMap().addMarker(new MarkerOptions()
+                Marker marker = getMap().addMarker(new MarkerOptions()
                         .position(point)
                         .title(placeMark.getProperty("name"))
                         .snippet(placeMark.getProperty("description"))
                         //.icon(BitmapDescriptorFactory.defaultMarker()));
-                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.m_unknown)));
+                        .icon(BitmapDescriptorFactory.fromResource(
+                                getResources().getIdentifier(
+                                        "marker_" + placeMark.getProperty("description").toLowerCase(),
+                                        "drawable",
+                                        this.getPackageName()
+                                )
+                        ))
+
+                );
+                marker.setTag(placeMark.getProperty("description").toLowerCase());
             }
 
         }
         // Setting an info window adapter allows us to change the both the contents and look of the
         // info window.
-        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
         mMap.setOnMarkerClickListener(this);
 
     }
 
-    public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
-        Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, drawableId);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            drawable = (DrawableCompat.wrap(drawable)).mutate();
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-
-        return bitmap;
-    }
 
     /**
      * Enables the My Location layer if the fine location permission has been granted.
@@ -395,10 +332,6 @@ public class MainActivity extends AppCompatActivity
 
     public boolean onMarkerClick(final Marker marker) {
 
-        // Retrieve the data from the marker.
-
-        Integer clickCount = (Integer) marker.getTag();
-        clickCount = 1;
         // Check if a click count was set, then display the click count.
 
         Bundle args = new Bundle();
@@ -407,7 +340,7 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fm = getFragmentManager();
         InfoDialog dialogFragment = new InfoDialog();
         dialogFragment.setMarker(marker);
-        dialogFragment.setView( findViewById(R.id
+        dialogFragment.setView(findViewById(R.id
                 .layout));
 
         dialogFragment.show(fm, "Sample Fragment");

@@ -1,8 +1,13 @@
 package com.example.nlfox.grabble;
 
+import android.app.ProgressDialog;
 import android.content.ClipData;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.DragEvent;
@@ -13,22 +18,31 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import java.io.IOException;
 import java.util.HashMap;
+
+import mbanje.kurt.fabbutton.FabButton;
+
+import static android.os.SystemClock.sleep;
 
 public class ScrabbleActivity extends AppCompatActivity implements View.OnClickListener {
 
     private DataHolder dataHolder;
-
+    private String word;
+    private FabButton fabSubmit;
 
     private void resetCharList() {
         ((ViewGroup) findViewById(R.id.topleft)).removeAllViews();
         HashMap<Character, Integer> letter_map = DataHolder.getInstance().getLetters();
-
         for (char i : letter_map.keySet()) {
             for (int j = 0; j < letter_map.get(i); j++) {
                 ImageView imageView = new ImageView(getBaseContext());
                 imageView.setTag(i);
-                imageView.setImageResource(getResources().getIdentifier("ic_" + Character.toString(i), "mipmap", this.getPackageName()));
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen.imageview_width), (int) getResources().getDimension(R.dimen.imageview_height));
+                imageView.setLayoutParams(layoutParams);
+                imageView.setImageResource(getResources().getIdentifier("letter_" + Character.toString(i), "drawable", this.getPackageName()));
                 imageView.setOnTouchListener(new MyTouchListener());
                 ((ViewGroup) findViewById(R.id.topleft)).addView(imageView);
                 imageView.setVisibility(View.VISIBLE);
@@ -36,33 +50,34 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void initBlank(){
+    private void initBlank(Boolean first) {
         for (int i = 1; i <= 7; i++) {
             View v = findViewById(getResources().getIdentifier("slot" + Integer.toString(i), "id", this.getPackageName()));
-            v.setOnDragListener(new ReplaceDragListener());
+
+            if (first) {
+                v.setOnDragListener(new ReplaceDragListener());
+            } else {
+                ((ImageView) v).setImageResource(R.mipmap.ic_round);
+            }
             v.setTag(-1);
         }
+    }
+
+    private void showSnackbar(String msg) {
+        Snackbar.make(findViewById(R.id.scrabble_submit), msg, Snackbar.LENGTH_LONG)
+                .setActionTextColor(Color.RED).show();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scrabble);
-//        dataHolder = DataHolder.getInstance();
-//        dataHolder.addLetter('a');
-//        dataHolder.addLetter('a');
-//        dataHolder.addLetter('a');
-//        dataHolder.addLetter('a');
-//        dataHolder.addLetter('b');
-//        dataHolder.addLetter('b');
-//        dataHolder.addLetter('b');
-//        dataHolder.addLetter('b');
 
         resetCharList();
-        initBlank();
+        initBlank(true);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(this);
+        fabSubmit = (FabButton) findViewById(R.id.scrabble_submit);
+        fabSubmit.setOnClickListener(this);
 
 
     }
@@ -75,12 +90,9 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
         return super.onCreateOptionsMenu(menu);
     }
 
+
     public boolean onItemClicked(MenuItem item) {
-        for (int i = 1; i <= 7; i++) {
-            View v = findViewById(getResources().getIdentifier("slot" + Integer.toString(i), "id", this.getPackageName()));
-            ((ImageView) v).setImageResource(R.mipmap.ic_round);
-            v.setTag(-1);
-        }
+        initBlank(false);
         resetCharList();
         return true;
     }
@@ -88,15 +100,34 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.fab: {
-                for (int i = 1; i <= 7; i++) {
-                    View v = findViewById(getResources().getIdentifier("slot" + Integer.toString(i), "id", this.getPackageName()));
-                    Log.v("sss", String.valueOf(v.getTag()));
-                }
-                break;
+        word = "";
+        fabSubmit.setIndeterminate(true);
+        fabSubmit.showProgress(true);
+
+        boolean error = false;
+        for (int i = 1; i <= 7; i++) {
+            View v = findViewById(getResources().getIdentifier("slot" + Integer.toString(i), "id", this.getPackageName()));
+            if (v.getTag().toString().equals("-1")) {
+                error = true;
             }
+            word += v.getTag().toString();
         }
+        if (error) {
+            showSnackbar("Wrong word. Try again");
+            word = "";
+            initBlank(false);
+            resetCharList();
+            fabSubmit.showProgress(false);
+            fabSubmit.resetIcon();
+            return;
+        }
+        CollectLetterTask t = new CollectLetterTask();
+        t.execute();
+        Log.v("Submitted: ", word);
+
+        return;
+
+
     }
 
     private final class MyTouchListener implements View.OnTouchListener {
@@ -114,6 +145,29 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
                 return false;
             }
         }
+    }
+
+
+    private class CollectLetterTask extends AsyncTask<Object, Void, Boolean> {
+        protected Boolean doInBackground(Object... params) {
+            try {
+
+                return GrabbleApplication.getAppContext(getApplication()).makeWord(word);
+            } catch (IOException e) {
+                return false;
+            }
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            initBlank(false);
+            fabSubmit.setIndeterminate(false);
+            fabSubmit.setProgress(100);
+            showSnackbar("Submitted:" + word);
+
+        }
+
     }
 
 

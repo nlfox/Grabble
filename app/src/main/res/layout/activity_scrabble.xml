@@ -1,116 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-
-    <org.apmem.tools.layouts.FlowLayout
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/header"
-        android:layout_gravity="center"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="220dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <org.apmem.tools.layouts.FlowLayout xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.6"
+        android:layout_gravity="center"
         android:background="@color/colorPrimary"
         android:elevation="23dp">
 
         <LinearLayout
             android:id="@+id/topright"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
             android:layout_row="1"
             android:background="@color/black_overlay"
-            android:gravity="center"
-            android:layout_column="0"
-            android:layout_height="wrap_content">
+            android:gravity="center">
+
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/ic_round"
-                android:contentDescription=""
                 android:id="@+id/slot1"
-                />
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription=""
+                app:srcCompat="@mipmap/ic_round" />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/ic_round"
+                android:id="@+id/slot2"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription=""
-                android:id="@+id/slot2" />
+                app:srcCompat="@mipmap/ic_round" />
+
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/slot3"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription=""
-                app:srcCompat="@mipmap/ic_round"
-                android:id="@+id/slot3" />
+                app:srcCompat="@mipmap/ic_round" />
+
             <ImageView
-                android:layout_width="wrap_content"
+                android:id="@+id/slot4"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription=""
-                android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/ic_round"
-                android:id="@+id/slot4" />
+                app:srcCompat="@mipmap/ic_round" />
+
             <ImageView
-                android:layout_width="wrap_content"
+                android:id="@+id/slot5"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription=""
-                android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/ic_round"
-                android:id="@+id/slot5" />
+                app:srcCompat="@mipmap/ic_round" />
+
             <ImageView
-                android:layout_width="wrap_content"
+                android:id="@+id/slot6"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription=""
-                android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/ic_round"
-                android:id="@+id/slot6" />
+                app:srcCompat="@mipmap/ic_round" />
+
             <ImageView
-                android:layout_width="wrap_content"
+                android:id="@+id/slot7"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:contentDescription=""
-                android:layout_height="wrap_content"
-                app:srcCompat="@mipmap/ic_round"
-                android:id="@+id/slot7" />
+                app:srcCompat="@mipmap/ic_round" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:weightSum="1"
-            android:layout_marginBottom="50dp">
-        </LinearLayout>
+
 
     </org.apmem.tools.layouts.FlowLayout>
 
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/body"
-        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/header"
+        android:layout_weight="0.4"
+        android:layout_gravity="center"
         card_view:cardCornerRadius="4dp">
-        <org.apmem.tools.layouts.FlowLayout
-            android:id="@+id/topleft"
-            android:layout_column="0"
-            android:layout_width="305dp"
-            android:layout_height="101dp">
 
-            <ImageView
-                android:id="@+id/myimage1"
-                android:layout_width="wrap_content"
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+             >
+
+            <org.apmem.tools.layouts.FlowLayout
+                android:id="@+id/topleft"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/ic_b" />
-        </org.apmem.tools.layouts.FlowLayout>
+                android:layout_column="0">
+
+            </org.apmem.tools.layouts.FlowLayout>
+        </ScrollView>
     </android.support.v7.widget.CardView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/header"
-        android:layout_marginBottom="-32dp"
-        android:layout_marginRight="20dp"
-        app:elevation="24dp"
-        app:srcCompat="@drawable/ic_check_black_24dp" />
+    </LinearLayout>
 
-</RelativeLayout>
+    <!--<android.support.design.widget.FloatingActionButton-->
+
+        <!---->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:layout_anchor="@id/header"-->
+        <!--app:layout_anchorGravity="bottom|right|end"-->
+        <!--app:elevation="24dp"-->
+        <!--app:srcCompat="@drawable/ic_check_black_24dp" />-->
+
+    <view
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        class="mbanje.kurt.fabbutton.FabButton"
+        android:id="@+id/scrabble_submit"
+        android:layout_gravity="center"
+        android:paddingRight="5dp"
+        android:clickable="true"
+        android:color="@color/colorAccent"
+        android:src="@mipmap/ic_makeword"
+        android:visibility="visible"
+        android:indeterminate="false"
+        android:max="100"
+        app:layout_anchor="@id/header"
+        app:layout_anchorGravity="bottom|right|end"
+        app:elevation="24dp"
+        app:fbb_autoStart="true"
+        app:fbb_progressColor="#ff170aff"
+        app:fbb_progressWidthRatio="0.1"
+        app:fbb_endBitmap="@drawable/ic_fab_complete"
+        app:fbb_showEndBitmap="true"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+</android.support.design.widget.CoordinatorLayout>
