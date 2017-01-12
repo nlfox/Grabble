@@ -1,12 +1,9 @@
 package com.example.nlfox.grabble;
 
-import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -21,11 +18,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
 import mbanje.kurt.fabbutton.FabButton;
-
-import static android.os.SystemClock.sleep;
 
 public class ScrabbleActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -35,7 +30,7 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
 
     private void resetCharList() {
         ((ViewGroup) findViewById(R.id.topleft)).removeAllViews();
-        HashMap<Character, Integer> letter_map = DataHolder.getInstance().getLetters();
+        Map<Character, Integer> letter_map = DataHolder.getInstance().getLetters();
         for (char i : letter_map.keySet()) {
             for (int j = 0; j < letter_map.get(i); j++) {
                 ImageView imageView = new ImageView(getBaseContext());

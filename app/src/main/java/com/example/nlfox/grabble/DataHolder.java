@@ -1,7 +1,9 @@
 package com.example.nlfox.grabble;
 
 import com.google.android.gms.maps.model.Marker;
+import com.google.gson.internal.LinkedTreeMap;
 
+import java.util.Map;
 import java.util.HashMap;
 
 /**
@@ -10,8 +12,8 @@ import java.util.HashMap;
 
 public class DataHolder {
 
-    private HashMap<Character, Integer> letters;
-    private HashMap<String, Boolean> collected;
+    private Map<Character, Integer> letters;
+    private Map<String, Boolean> collected;
 
     public String toString() {
         return letters.toString();
@@ -32,9 +34,13 @@ public class DataHolder {
     }
 
 
-    public void collectPoint(String letter,String point) {
+    public void collectPoint(String letter, String point) {
         addLetter(letter.charAt(0));
         collected.put(point, true);
+    }
+
+    public Map<String, Boolean> getCollected(){
+        return collected;
     }
 
     public boolean addLetter(Character c) {
@@ -47,11 +53,20 @@ public class DataHolder {
     }
 
 
-    public HashMap<Character, Integer> getLetters() {
+    public Map<Character, Integer> getLetters() {
         return letters;
     }
 
     private static final DataHolder holder = new DataHolder();
+
+    public void initialize(LinkedTreeMap m) {
+        collected = (Map<String, Boolean>) m.get("collected");
+        Map<String, Double> letters_before = (Map<String, Double>) m.get("letter");
+        letters = new HashMap<Character, Integer>();
+        for (String i : letters_before.keySet()) {
+            letters.put(i.charAt(0), letters_before.get(i).intValue());
+        }
+    }
 
     public static DataHolder getInstance() {
         return holder;

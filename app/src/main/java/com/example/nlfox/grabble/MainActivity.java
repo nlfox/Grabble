@@ -1,6 +1,7 @@
 package com.example.nlfox.grabble;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
@@ -47,6 +48,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.kml.KmlGeometry;
 import com.google.maps.android.kml.KmlLayer;
 import com.google.maps.android.kml.KmlPlacemark;
@@ -54,6 +56,7 @@ import com.google.maps.android.kml.KmlPlacemark;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.Map;
 
 /*
  * Copyright (C) 2012 The Android Open Source Project
@@ -102,6 +105,7 @@ public class MainActivity extends AppCompatActivity
 
     private GoogleMap mMap;
     private boolean firstOpen = true;
+    private Map<String, Boolean> collected;
 
     public GoogleMap getMap() {
         return mMap;
@@ -112,15 +116,27 @@ public class MainActivity extends AppCompatActivity
      */
 
 
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                String result=data.getStringExtra("result");
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = new Intent(this, SplashActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
         setContentView(R.layout.activity_main);
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+
+
         FloatingActionButton grabbleBtn = (FloatingActionButton) findViewById(R.id.grabble);
         grabbleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -246,41 +262,48 @@ public class MainActivity extends AppCompatActivity
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        collected = GrabbleApplication.getAppContext(getApplication()).getDataHolder().getCollected();
         for (KmlPlacemark placeMark : kmlLayer.getPlacemarks()) {
 
             KmlGeometry g = placeMark.getGeometry();
 
             if (g.getGeometryType().equals("Point")) {
-                LatLng point = (LatLng) g.getGeometryObject();
-                Marker marker = getMap().addMarker(new MarkerOptions()
-                        .position(point)
-                        .title(placeMark.getProperty("name"))
-                        .snippet(placeMark.getProperty("description"))
-                        //.icon(BitmapDescriptorFactory.defaultMarker()));
-                        .icon(BitmapDescriptorFactory.fromResource(
-                                getResources().getIdentifier(
-                                        "marker_" + placeMark.getProperty("description").toLowerCase(),
-                                        "drawable",
-                                        this.getPackageName()
-                                )
-                        ))
+                if (!collected.containsKey(placeMark.getProperty("name"))) {
+                    {
+                        LatLng point = (LatLng) g.getGeometryObject();
+                        Marker marker = getMap().addMarker(new MarkerOptions()
+                                .position(point)
+                                .title(placeMark.getProperty("name"))
+                                .snippet(placeMark.getProperty("description"))
+                                //.icon(BitmapDescriptorFactory.defaultMarker()));
+                                .icon(BitmapDescriptorFactory.fromResource(
+                                        getResources().getIdentifier(
+                                                "marker_" + placeMark.getProperty("description").toLowerCase(),
+                                                "drawable",
+                                                this.getPackageName()
+                                        )
+                                ))
 
-                );
-                marker.setTag(placeMark.getProperty("description").toLowerCase());
+                        );
+                        marker.setTag(placeMark.getProperty("description").toLowerCase());
+                    }
+
+                } else {
+                    Log.v("not collected", placeMark.getProperty("name"));
+                }
+                // Setting an info window adapter allows us to change the both the contents and look of the
+                // info window.
+                mMap.setOnMarkerClickListener(this);
+
             }
 
         }
-        // Setting an info window adapter allows us to change the both the contents and look of the
-        // info window.
-        mMap.setOnMarkerClickListener(this);
-
     }
-
 
     /**
      * Enables the My Location layer if the fine location permission has been granted.
      */
+
     private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {

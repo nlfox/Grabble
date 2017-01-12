@@ -23,13 +23,13 @@ import okhttp3.Response;
 
 public class WebModel {
     private static OkHttpClient client = null;
-    private static String site = "http://192.168.56.1:5000/";
+    private static String site = "http://192.168.137.222:5000/";
     private static String token;
     private Context c;
 
     class Message {
-        public String message;
-        public int code;
+        String message;
+        int code;
     }
 
     public WebModel(Context context) {
@@ -126,5 +126,6 @@ public class WebModel {
         SpUtils.putString(c, "token", token);
         return msgObj.code;
     }
+
 
 }

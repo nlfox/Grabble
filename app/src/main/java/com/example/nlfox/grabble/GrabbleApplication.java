@@ -6,9 +6,11 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.Marker;
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.locks.Lock;
 
 /**
  * Created by nlfox on 12/23/16.
@@ -41,10 +43,10 @@ public class GrabbleApplication extends Application {
         return (GrabbleApplication) x;
     }
 
-    public boolean collectPoint(String letter,String point) throws IOException {
+    public boolean collectPoint(String letter, String point) throws IOException {
         try {
-            webModel.collectPoint(letter,point);
-            dataHolder.collectPoint(letter,point);
+            webModel.collectPoint(letter, point);
+            dataHolder.collectPoint(letter, point);
         } catch (Exception e) {
             return false;
         }
@@ -60,14 +62,23 @@ public class GrabbleApplication extends Application {
     public void fromJSON(String s) {
 
     }
+    Boolean ready = false;
+
+    Boolean isReady() {
+        return ready;
+    }
 
     public void initialize() {
         try {
             String data = webModel.get("info");
-            Log.v("data",data);
+            Gson gson = new Gson();
+            LinkedTreeMap result = gson.fromJson(data, LinkedTreeMap.class);
+            DataHolder.getInstance().initialize(result);
+            Log.v("data", data);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        ready = true;
 
     }
 

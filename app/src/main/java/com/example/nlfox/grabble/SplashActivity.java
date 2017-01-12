@@ -79,8 +79,13 @@ public class SplashActivity extends AwesomeSplash {
 
         @Override
         protected void onPostExecute(Boolean result) {
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_CANCELED, returnIntent);
             finish();
         }
 
+    }
+    @Override
+    public void onBackPressed() {
     }
 }
