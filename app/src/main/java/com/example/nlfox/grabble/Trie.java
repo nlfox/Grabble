@@ -42,6 +42,9 @@ public class Trie {
     Trie() {
         head = new Node();
     }
+    Trie(String s){
+        head = deserialize(s);
+    }
 
 
     void addString(String s) {
@@ -106,7 +109,7 @@ public class Trie {
      * designed by yourself, and deserialize it here as you serialize it in
      * "serialize" method.
      */
-    public Trie deserialize(String data) {
+    public Node deserialize(String data) {
         // Write your code here
         if (data == null || data.length() == 0)
             return null;
@@ -127,9 +130,8 @@ public class Trie {
                     path.peek().children.put(c, current);
             }
         }
-        Trie n = new Trie();
-        n.head = root;
-        return n;
+
+        return root;
     }
 
 //    public static void main(String[] args) {
