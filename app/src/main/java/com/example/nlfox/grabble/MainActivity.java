@@ -56,6 +56,8 @@ import com.google.maps.android.kml.KmlPlacemark;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -85,7 +87,6 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements
-        OnMyLocationButtonClickListener,
         OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
@@ -116,12 +117,11 @@ public class MainActivity extends AppCompatActivity
      */
 
 
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
-                String result=data.getStringExtra("result");
+            if (resultCode == Activity.RESULT_OK) {
+                String result = data.getStringExtra("result");
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
@@ -133,10 +133,11 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = new Intent(this, SplashActivity.class);
-        startActivityForResult(intent, 1);
+        startActivity(intent);
         setContentView(R.layout.activity_main);
-
-
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
         FloatingActionButton grabbleBtn = (FloatingActionButton) findViewById(R.id.grabble);
         grabbleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,17 +154,6 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-
-            requestLocationPermission();
-
-        } else {
-            Log.i("Grabble",
-                    "CAMERA permission has already been granted. Displaying camera preview.");
-        }
 
 
     }
@@ -187,8 +177,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
-
-        mMap.setOnMyLocationButtonClickListener(this);
         LocationManager locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
@@ -202,16 +190,18 @@ public class MainActivity extends AppCompatActivity
         uiSettings.setMapToolbarEnabled(false);
 
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            requestLocationPermission();
+
+        } else {
+            Log.i("Grabble",
+                    "loc permission has already been granted. Displaying camera preview.");
         }
+
 // Define a listener that responds to location updates
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
@@ -251,7 +241,7 @@ public class MainActivity extends AppCompatActivity
 //        }
 
 
-        enableMyLocation();
+        //enableMyLocation();
 
 
         KmlLayer kmlLayer = null;
@@ -300,30 +290,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * Enables the My Location layer if the fine location permission has been granted.
-     */
-
-    private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission to access the location is missing.
-            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, true);
-        } else if (mMap != null) {
-            // Access to the location has been granted to the app.
-            mMap.setMyLocationEnabled(true);
-        }
-    }
-
-    @Override
-    public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
-        return false;
-    }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -335,7 +301,7 @@ public class MainActivity extends AppCompatActivity
         if (PermissionUtils.isPermissionGranted(permissions, grantResults,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
             // Enable the my location layer if the permission has been granted.
-            enableMyLocation();
+            //enableMyLocation();
         } else {
             // Display the missing permission error dialog when the fragments resume.
             mPermissionDenied = true;

@@ -88,4 +88,5 @@ public class SplashActivity extends AwesomeSplash {
     @Override
     public void onBackPressed() {
     }
+
 }
