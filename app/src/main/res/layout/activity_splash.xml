@@ -26,7 +26,7 @@
 
             android:layout_width="250dp"
             android:layout_height="30dp"
-            android:id="@+id/progress_1"
+            android:id="@+id/splash_progbar"
             app:rcBackgroundColor="@color/custom_progress_background"
             app:rcBackgroundPadding="2dp"
             app:rcMax="100"
@@ -36,6 +36,7 @@
             app:rcRadius="10dp" />
 
         <TextView
+            android:id="@+id/splash_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="4dp"

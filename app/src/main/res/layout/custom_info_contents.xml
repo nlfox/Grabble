@@ -23,7 +23,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="top"
                 android:paddingTop="10dp"
-                android:text="Point11111"
+                android:text="Point"
                 android:textAlignment="center"
                 android:textColor="@color/cardview_light_background"
                 android:textSize="20sp" />
@@ -43,19 +43,20 @@
                 android:id="@+id/marker_pic"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="40dp"
+                android:paddingBottom="40dp"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
                 android:src="@drawable/letter_a" />
 
 
         </org.apmem.tools.layouts.FlowLayout>
 
-        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <LinearLayout
             android:id="@+id/body"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="110dp"
             android:layout_weight="1"
-            android:layout_gravity="center"
-            card_view:cardCornerRadius="4dp">
+            android:layout_gravity="center">
 
             <TextView
                 android:layout_width="match_parent"
@@ -67,7 +68,7 @@
                 android:textSize="20sp" />
 
 
-        </android.support.v7.widget.CardView>
+        </LinearLayout>
     </LinearLayout>
 
     <view

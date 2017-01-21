@@ -36,6 +36,10 @@ public class GrabbleApplication extends Application {
         return preferences.getBoolean("night_mode", false);
     }
 
+    public boolean isHardMode() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return preferences.getBoolean("hard_mode", false);
+    }
 
 
     public WebModel getWebModel() {
@@ -86,7 +90,7 @@ public class GrabbleApplication extends Application {
         return true;
     }
 
-    void updateScoreboard(){
+    void updateScoreboard() {
         try {
             scoreItems = webModel.getScoreboardItem();
         } catch (IOException e) {
@@ -102,21 +106,19 @@ public class GrabbleApplication extends Application {
         return ready;
     }
 
-    public void initialize() {
-        try {
-            String data = webModel.get("info");
-            Gson gson = new Gson();
-            scoreItems = webModel.getScoreboardItem();
-            t = new Trie(getResources().openRawResource(R.raw.grabble));
-            LinkedTreeMap result = gson.fromJson(data, LinkedTreeMap.class);
-            DataHolder.getInstance().initialize(result);
-            if (!webModel.has_letter_map()){
-                webModel.downloadLetterMap();
-            }
-            Log.v("data", data);
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void initialize() throws Exception {
+
+        String data = webModel.get("info");
+        Gson gson = new Gson();
+        scoreItems = webModel.getScoreboardItem();
+        t = new Trie(getResources().openRawResource(R.raw.grabble));
+        LinkedTreeMap result = gson.fromJson(data, LinkedTreeMap.class);
+        DataHolder.getInstance().initialize(result);
+        if (!webModel.has_letter_map()) {
+            webModel.downloadLetterMap();
         }
+        Log.v("data", data);
+
         ready = true;
 
     }

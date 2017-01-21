@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -29,6 +30,17 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
     private String word;
     private FabButton fabSubmit;
     private Trie t;
+
+    // disable multi-touch in scrabble game
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if(event.getPointerCount() > 1) {
+            System.out.println("Multitouch detected!");
+            return true;
+        }
+        else
+            return super.onTouchEvent(event);
+    }
 
     private void resetCharList() {
         t = GrabbleApplication.getAppContext(getApplicationContext()).getTrie();
@@ -69,6 +81,7 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
             }
             w += v.getTag().toString();
         }
+        Log.v("Sc",w);
         List<String> s = t.getSuggestion(w);
         if (s == null) {
             showSnackbar("No word with the prefix.");
@@ -78,6 +91,7 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
             ViewGroup v = (ViewGroup) findViewById(getResources().getIdentifier("suggestion" + Integer.toString(i + 1), "id", this.getPackageName()));
             v.removeAllViews();
             for (Character j : s.get(i).toCharArray()) {
+                Log.v("Sc",s.get(i));
                 ImageView imageView = new ImageView(getBaseContext());
                 imageView.setTag(j);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen.imageview_width), (int) getResources().getDimension(R.dimen.imageview_height));
@@ -91,9 +105,9 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void initBlank(Boolean first) {
+        findViewById(R.id.topright).startAnimation(AnimationUtils.loadAnimation(ScrabbleActivity.this, R.anim.shake_light));
         for (int i = 1; i <= 7; i++) {
             View v = findViewById(getResources().getIdentifier("slot" + Integer.toString(i), "id", this.getPackageName()));
-
             if (first) {
                 v.setOnDragListener(new ReplaceDragListener());
             } else {
@@ -208,7 +222,8 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
             initBlank(false);
             fabSubmit.setIndeterminate(false);
             fabSubmit.setProgress(100);
-            showSnackbar("Submitted:" + word);
+            if (result)
+                showSnackbar("Submitted:" + word);
 
         }
 
@@ -241,6 +256,7 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
                     owner.removeView(srcView);
                     targetView.setImageDrawable(((ImageView) srcView).getDrawable());
                     targetView.setTag(srcView.getTag());
+                    targetView.startAnimation(AnimationUtils.loadAnimation(ScrabbleActivity.this, R.anim.shake));
                 }
             }
             return true;

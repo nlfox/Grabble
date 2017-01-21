@@ -20,7 +20,9 @@ public class TrieTest {
 
     @Test
     public void validWord() throws Exception {
-
+        assertEquals(t.validWord("test"), false);
+        assertEquals(t.validWord("holiday"), true);
+        assertEquals(t.validWord("holidas"), false);
     }
 
     @Test
@@ -31,8 +33,8 @@ public class TrieTest {
 
     @Test
     public void suggest() {
-        assertArrayEquals(t.getSuggestion("holi").toArray(),new String[]{"holiday"});
-        //System.out.println(t.getSuggestion("holi"));
+        assertArrayEquals(t.getSuggestion("holi").toArray(), new String[]{"holiday"});
+        System.out.println(t.getSuggestion("gu"));
     }
 
     @Test

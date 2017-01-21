@@ -46,35 +46,10 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-
-/*
- * Copyright (C) 2012 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-
-/**
- * This demo shows how GMS Location can be used to check for changes to the users location.  The
- * "My Location" button uses GMS Location to set the blue dot representing the users location.
- * Permission for {@link android.Manifest.permission#ACCESS_FINE_LOCATION} is requested at run
- * time. If the permission has not been granted, the Activity is finished with an error message.
- */
 
 
 public class MainActivity extends AppCompatActivity
@@ -101,7 +76,9 @@ public class MainActivity extends AppCompatActivity
     private Map<String, Boolean> collected;
     private List<Marker> markerList;
 
-    public Marker myLocation;
+    public Marker myLocationMarker;
+
+    LatLng firstLocation;
 
     public GoogleMap getMap() {
         return mMap;
@@ -127,6 +104,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent i = getIntent();
+        firstLocation = ((Bundle) i.getParcelableExtra("bundle")).getParcelable("position");
+
         setContentView(R.layout.activity_main);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -248,13 +228,54 @@ public class MainActivity extends AppCompatActivity
     public void onMapReady(GoogleMap map) {
         mMap = map;
         markerList = new ArrayList<>();
+
+
+        //First move camera to location get in Splash
+        CameraUpdate myLocation = CameraUpdateFactory.newLatLngZoom(firstLocation, 19);
+        myLocationMarker = getMap().addMarker(new MarkerOptions()
+                .position(firstLocation)
+                .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_person", 300, 300))));
+        getMap().moveCamera(myLocation);
+
+
+
         LocationManager locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
 
+        LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                // Called when a new location is found by the network location provider.
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+
+                LatLng coordinate = new LatLng(latitude, longitude);
+
+                CameraUpdate myLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 19);
+                getMap().animateCamera(myLocation);
+                animateMarker(myLocationMarker, coordinate, false);
+                for (Marker i : getNearestNMarkers(5, coordinate)) {
+                    if (!collected.containsKey(i.getTitle()))
+                        i.setVisible(true);
+                }
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            public void onProviderEnabled(String provider) {
+            }
+
+            public void onProviderDisabled(String provider) {
+            }
+        };
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
         if (GrabbleApplication.getAppContext(getApplicationContext()).isNightMode()) {
-            boolean success = mMap.setMapStyle(new MapStyleOptions(getResources()
-                    .getString(R.string.style_json)));
+            mMap.setMapStyle(new MapStyleOptions(getResources().getString(R.string.style_json)));
         }
+
         UiSettings uiSettings = getMap().getUiSettings();
         uiSettings.setZoomGesturesEnabled(false);
         uiSettings.setScrollGesturesEnabled(false);
@@ -275,54 +296,14 @@ public class MainActivity extends AppCompatActivity
         }
 
 // Define a listener that responds to location updates
-        LocationListener locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                // Called when a new location is found by the network location provider.
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
-                LatLng coordinate = new LatLng(latitude, longitude);
-                CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 19);
-
-
-                if (firstOpen) {
-                    myLocation = getMap().addMarker(new MarkerOptions()
-                            .position(coordinate)
-                            .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_person", 300, 300))));
-
-                    getMap().moveCamera(yourLocation);
-
-                    firstOpen = false;
-
-                } else {
-                    getMap().animateCamera(yourLocation);
-                    animateMarker(myLocation, coordinate, false);
-                    //GrabbleApplication.getAppContext(getApplicationContext())myLocation
-                }
-                for (Marker i : getNearestNMarkers(5, coordinate)) {
-                    if (!collected.containsKey(i.getTitle()))
-                        i.setVisible(true);
-                }
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-            }
-
-            public void onProviderDisabled(String provider) {
-            }
-        };
-
 
         KmlLayer kmlLayer = null;
         String letterMap = GrabbleApplication.getAppContext(getApplicationContext()).getWebModel().getLetterMap();
         InputStream letterMapStream = new ByteArrayInputStream(letterMap.getBytes());
         try {
             kmlLayer = new KmlLayer(getMap(), letterMapStream, getApplicationContext());
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (XmlPullParserException | IOException e) {
+
             e.printStackTrace();
         }
         collected = GrabbleApplication.getAppContext(getApplication()).getDataHolder().getCollected();
@@ -335,19 +316,36 @@ public class MainActivity extends AppCompatActivity
                 if (!collected.containsKey(placeMark.getProperty("name"))) {
                     {
                         LatLng point = (LatLng) g.getGeometryObject();
-                        Marker marker = getMap().addMarker(new MarkerOptions()
-                                .position(point)
-                                .title(placeMark.getProperty("name"))
-                                .snippet(placeMark.getProperty("description"))
-                                .icon(BitmapDescriptorFactory.fromResource(
-                                        getResources().getIdentifier(
-                                                "marker_" + placeMark.getProperty("description").toLowerCase(),
-                                                "drawable",
-                                                this.getPackageName()
-                                        )
-                                )).visible(false)
+                        Marker marker;
+                        if (!GrabbleApplication.getAppContext(getApplicationContext()).isHardMode()) {
+                            marker = getMap().addMarker(new MarkerOptions()
+                                    .position(point)
+                                    .title(placeMark.getProperty("name"))
+                                    .snippet(placeMark.getProperty("description"))
+                                    .icon(BitmapDescriptorFactory.fromResource(
+                                            getResources().getIdentifier(
+                                                    "marker_" + placeMark.getProperty("description").toLowerCase(),
+                                                    "drawable",
+                                                    this.getPackageName()
+                                            )
+                                    )).visible(false)
 
-                        );
+                            );
+                        } else {
+                            marker = getMap().addMarker(new MarkerOptions()
+                                    .position(point)
+                                    .title(placeMark.getProperty("name"))
+                                    .snippet(placeMark.getProperty("description"))
+                                    .icon(BitmapDescriptorFactory.fromResource(
+                                            getResources().getIdentifier(
+                                                    "marker_qm",
+                                                    "drawable",
+                                                    this.getPackageName()
+                                            )
+                                    )).visible(false)
+
+                            );
+                        }
                         marker.setTag(placeMark.getProperty("description").toLowerCase());
                         markerList.add(marker);
 
@@ -362,10 +360,13 @@ public class MainActivity extends AppCompatActivity
 
             }
 
-
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
+
+        for (Marker i : getNearestNMarkers(5, firstLocation)) {
+            if (!collected.containsKey(i.getTitle()))
+                i.setVisible(true);
+        }
 
 
     }
