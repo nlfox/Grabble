@@ -1,13 +1,19 @@
 package com.example.nlfox.grabble;
 
 
-
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+
 import android.preference.PreferenceFragment;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.widget.Toolbar;
 
@@ -16,6 +22,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,9 +31,9 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
-import com.example.nlfox.grabble.dummy.DummyContent;
+import com.example.nlfox.grabble.dummy.ScoreboardContent;
 
-public class InfoActivity extends AppCompatActivity implements ScoreboardFragment.OnListFragmentInteractionListener ,PlayerInfoFragment.OnFragmentInteractionListener {
+public class InfoActivity extends AppCompatActivity implements ScoreboardFragment.OnListFragmentInteractionListener, PlayerInfoFragment.OnFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -61,14 +68,6 @@ public class InfoActivity extends AppCompatActivity implements ScoreboardFragmen
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
     }
 
@@ -95,8 +94,9 @@ public class InfoActivity extends AppCompatActivity implements ScoreboardFragmen
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onListFragmentInteraction(ScoreboardContent.ScoreItem item) {
         return;
     }
 
@@ -186,12 +186,66 @@ public class InfoActivity extends AppCompatActivity implements ScoreboardFragmen
         }
     }
 
-    public static class PrefsFragment extends PreferenceFragmentCompat {
+    public static class PrefsFragment extends PreferenceFragmentCompat implements android.support.v7.preference.Preference.OnPreferenceClickListener {
+
+
+        private static final String TAG = "PF";
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             // Load the preferences from an XML resource
             setPreferencesFromResource(R.xml.preferences, rootKey);
+            android.support.v7.preference.Preference logout = findPreference("logout");
+            logout.setOnPreferenceClickListener(this);
+
         }
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            if (preference.getKey().equals("logout")) {
+                GrabbleApplication.getAppContext(getActivity().getApplicationContext()).logout();
+                doRestart(getActivity().getApplicationContext());
+            }
+            return true;
+        }
+        public static void doRestart(Context c) {
+            try {
+                //check if the context is given
+                if (c != null) {
+                    //fetch the packagemanager so we can get the default launch activity
+                    // (you can replace this intent with any other activity if you want
+                    PackageManager pm = c.getPackageManager();
+                    //check if we got the PackageManager
+                    if (pm != null) {
+                        //create the intent with the default start activity for your application
+                        Intent mStartActivity = pm.getLaunchIntentForPackage(
+                                c.getPackageName()
+                        );
+                        if (mStartActivity != null) {
+                            mStartActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            //create a pending intent so the application is restarted after System.exit(0) was called.
+                            // We use an AlarmManager to call this intent in 100ms
+                            int mPendingIntentId = 223344;
+                            PendingIntent mPendingIntent = PendingIntent
+                                    .getActivity(c, mPendingIntentId, mStartActivity,
+                                            PendingIntent.FLAG_CANCEL_CURRENT);
+                            AlarmManager mgr = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+                            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                            //kill the application
+                            System.exit(0);
+                        } else {
+                            Log.e(TAG, "Was not able to restart application, mStartActivity null");
+                        }
+                    } else {
+                        Log.e(TAG, "Was not able to restart application, PM null");
+                    }
+                } else {
+                    Log.e(TAG, "Was not able to restart application, Context null");
+                }
+            } catch (Exception ex) {
+                Log.e(TAG, "Was not able to restart application");
+            }
+        }
+
     }
 }

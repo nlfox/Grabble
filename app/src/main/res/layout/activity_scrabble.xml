@@ -78,6 +78,26 @@
                 app:srcCompat="@mipmap/ic_round" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/suggestion1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="1"
+            android:background="@color/black_overlay"
+            android:gravity="center"
+            android:orientation="horizontal" />
+
+        <LinearLayout
+            android:id="@+id/suggestion2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="1"
+            android:background="@color/black_overlay"
+            android:gravity="center"
+            android:orientation="horizontal" />
+
 
 
     </org.apmem.tools.layouts.FlowLayout>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:gravity="bottom"
+    android:orientation="vertical"
+
+    tools:context="com.example.nlfox.grabble.SplashActivity">
+
+    <LinearLayout
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@color/background_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+
+            android:layout_width="250dp"
+            android:layout_height="30dp"
+            android:id="@+id/progress_1"
+            app:rcBackgroundColor="@color/custom_progress_background"
+            app:rcBackgroundPadding="2dp"
+            app:rcMax="100"
+            app:rcProgress="50"
+            app:rcProgressColor="@color/custom_progress_blue_progress"
+            app:rcSecondaryProgressColor="@color/custom_progress_blue_progress_half"
+            app:rcRadius="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="4dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:text="rounder"
+            android:textColor="@color/text"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

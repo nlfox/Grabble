@@ -1,68 +1,120 @@
 package com.example.nlfox.grabble;
 
-import android.app.Activity;
+import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 
-import com.daimajia.androidanimations.library.Techniques;
-import com.viksaa.sssplash.lib.activity.AwesomeSplash;
-import com.viksaa.sssplash.lib.cnst.Flags;
-import com.viksaa.sssplash.lib.model.ConfigSplash;
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
-import java.io.IOException;
+public class SplashActivity extends AppCompatActivity {
 
-public class SplashActivity extends AwesomeSplash {
+    int count = 0;
+    RoundCornerProgressBar progress1;
 
-    @Override
-    public void initSplash(ConfigSplash configSplash) {
-        configSplash.setBackgroundColor(R.color.colorPrimary); //any color you want form colors.xml
-        configSplash.setAnimCircularRevealDuration(1000); //int ms
-        configSplash.setRevealFlagX(Flags.REVEAL_RIGHT);  //or Flags.REVEAL_LEFT
-        configSplash.setRevealFlagY(Flags.REVEAL_BOTTOM); //or Flags.REVEAL_TOP
-
-        //Choose LOGO OR PATH; if you don't provide String value for path it's logo by default
-
-        //Customize Logo
-        configSplash.setLogoSplash(R.drawable.logo); //or any other drawable
-        configSplash.setAnimLogoSplashDuration(2000); //int ms
-        configSplash.setAnimLogoSplashTechnique(Techniques.Bounce); //choose one form Techniques (ref: https://github.com/daimajia/AndroidViewAnimations)
-
-
-//        //Customize Path
-//        configSplash.setPathSplash(Constants.DROID_LOGO); //set path String
-//        configSplash.setOriginalHeight(400); //in relation to your svg (path) resource
-//        configSplash.setOriginalWidth(400); //in relation to your svg (path) resource
-//        configSplash.setAnimPathStrokeDrawingDuration(3000);
-//        configSplash.setPathSplashStrokeSize(3); //I advise value be <5
-//        configSplash.setPathSplashStrokeColor(R.color.strokeColor); //any color you want form colors.xml
-//        configSplash.setAnimPathFillingDuration(3000);
-//        configSplash.setPathSplashFillColor(R.color.fillColor); //path object filling color
-
-        //Customize Title
-        configSplash.setTitleSplash("Grabble");
-        configSplash.setTitleTextColor(R.color.strokeColor);
-        configSplash.setTitleTextSize(30f); //float value
-        configSplash.setAnimTitleDuration(3000);
-        configSplash.setAnimTitleTechnique(Techniques.FlipInX);
-        InitTask initTask = new InitTask();
-        initTask.execute();
+    protected void moveProgressBar(boolean finish) {
+        progress1.setProgress(progress1.getProgress() + 30.0f);
+        count += 1;
+        if (count == 3 && finish) {
+            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
-    public void animationsFinished() {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
+        progress1 = (RoundCornerProgressBar) findViewById(R.id.progress_1);
+        progress1.setMax(90.0f);
+        progress1.setProgress(0.0f);
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            requestLocationPermission();
+
+        } else {
+            Log.i("Grabble",
+                    "1st move.");
+            Log.i("Grabble",
+                    "loc permission has already been granted. Displaying camera preview.");
+            moveProgressBar(false);
+            isFirstLogin();
+        }
+
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+
+        // If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            // permission was granted, yay! Do the
+            // contacts-related task you need to do.
+            isFirstLogin();
+
+        } else {
+            finish();
+            // permission denied, boo! Disable the
+            // functionality that depends on this permission.
+        }
+        return;
+
+
+        // other 'case' lines to check for other
+        // permissions this app might request
+    }
+
+
+    private void requestLocationPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) && ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    0);
+
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                    0);
+        }
+
+    }
+
+    protected void isFirstLogin() {
         boolean isFirstOpen = GrabbleApplication.getAppContext(getApplication()).getWebModel().has_token();
         // if first start, go to login activity
         if (GrabbleApplication.getAppContext(getApplication()).getWebModel().has_token()) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-            //finish();
+            finish();
             //return;
         } else {
+            InitTask a = new InitTask();
+            a.execute();
+            moveProgressBar(false);
             //finish();
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
     }
 
     private class InitTask extends AsyncTask<Object, Void, Boolean> {
@@ -79,14 +131,8 @@ public class SplashActivity extends AwesomeSplash {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            Intent returnIntent = new Intent();
-            setResult(Activity.RESULT_CANCELED, returnIntent);
-            finish();
+            moveProgressBar(true);
         }
 
     }
-    @Override
-    public void onBackPressed() {
-    }
-
 }

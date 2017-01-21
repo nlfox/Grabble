@@ -6,16 +6,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.nlfox.grabble.dummy.DummyContent.DummyItem;
+import com.example.nlfox.grabble.dummy.ScoreboardContent;
 
 import java.util.List;
 
 public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<ScoreboardContent.ScoreItem> mValues;
     private final ScoreboardFragment.OnListFragmentInteractionListener mListener;
 
-    public MyItemRecyclerViewAdapter(List<DummyItem> items, ScoreboardFragment.OnListFragmentInteractionListener listener) {
+    public MyItemRecyclerViewAdapter(List<ScoreboardContent.ScoreItem> items, ScoreboardFragment.OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -31,7 +31,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mContentView.setText(mValues.get(position).name);
         holder.mScoreView.setText(mValues.get(position).score);
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +55,7 @@ public class MyItemRecyclerViewAdapter extends RecyclerView.Adapter<MyItemRecycl
         public final TextView mIdView;
         public final TextView mContentView;
         public final TextView mScoreView;
-        public DummyItem mItem;
+        public ScoreboardContent.ScoreItem mItem;
 
         public ViewHolder(View view) {
             super(view);

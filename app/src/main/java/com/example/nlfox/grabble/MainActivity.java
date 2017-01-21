@@ -7,40 +7,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.VectorDrawable;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatDrawableManager;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.content.Intent;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -48,17 +37,20 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.kml.KmlGeometry;
 import com.google.maps.android.kml.KmlLayer;
 import com.google.maps.android.kml.KmlPlacemark;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 /*
  * Copyright (C) 2012 The Android Open Source Project
@@ -107,6 +99,9 @@ public class MainActivity extends AppCompatActivity
     private GoogleMap mMap;
     private boolean firstOpen = true;
     private Map<String, Boolean> collected;
+    private List<Marker> markerList;
+
+    public Marker myLocation;
 
     public GoogleMap getMap() {
         return mMap;
@@ -132,8 +127,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(this, SplashActivity.class);
-        startActivity(intent);
         setContentView(R.layout.activity_main);
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -158,6 +151,77 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private float distanceBetween(LatLng latLng1, LatLng latLng2) {
+
+        Location loc1 = new Location(LocationManager.GPS_PROVIDER);
+        Location loc2 = new Location(LocationManager.GPS_PROVIDER);
+
+        loc1.setLatitude(latLng1.latitude);
+        loc1.setLongitude(latLng1.longitude);
+
+        loc2.setLatitude(latLng2.latitude);
+        loc2.setLongitude(latLng2.longitude);
+
+
+        return loc1.distanceTo(loc2);
+    }
+
+    public List<Marker> getNearestNMarkers(int n, LatLng pos) {
+        PriorityQueue<Marker> m = new PriorityQueue<Marker>(n, (p, q) -> {
+            float dist = distanceBetween(p.getPosition(), pos) - distanceBetween(q.getPosition(), pos);
+            if (dist > 0) {
+                return 1;
+            } else if (dist == 0) {
+                return 0;
+
+            } else {
+                return -1;
+            }
+
+        });
+        m.addAll(markerList);
+        List<Marker> res = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            res.add(m.poll());
+        }
+        return res;
+
+    }
+
+    public void animateMarker(final Marker marker, final LatLng toPosition,
+                              final boolean hideMarker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = mMap.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final long duration = 500;
+        final Interpolator interpolator = new LinearInterpolator();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed
+                        / duration);
+                double lng = t * toPosition.longitude + (1 - t)
+                        * startLatLng.longitude;
+                double lat = t * toPosition.latitude + (1 - t)
+                        * startLatLng.latitude;
+                marker.setPosition(new LatLng(lat, lng));
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
+                }
+            }
+        });
+    }
+
     private void requestLocationPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) && ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -174,15 +238,23 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public Bitmap resizeMapIcons(String iconName, int width, int height) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "mipmap", getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return resizedBitmap;
+    }
+
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
+        markerList = new ArrayList<>();
         LocationManager locationManager = (LocationManager)
                 getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        // set zoom
-        boolean success = mMap.setMapStyle(new MapStyleOptions(getResources()
-                .getString(R.string.style_json)));
+
+        if (GrabbleApplication.getAppContext(getApplicationContext()).isNightMode()) {
+            boolean success = mMap.setMapStyle(new MapStyleOptions(getResources()
+                    .getString(R.string.style_json)));
+        }
         UiSettings uiSettings = getMap().getUiSettings();
         uiSettings.setZoomGesturesEnabled(false);
         uiSettings.setScrollGesturesEnabled(false);
@@ -210,12 +282,25 @@ public class MainActivity extends AppCompatActivity
                 double longitude = location.getLongitude();
                 LatLng coordinate = new LatLng(latitude, longitude);
                 CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 19);
+
+
                 if (firstOpen) {
+                    myLocation = getMap().addMarker(new MarkerOptions()
+                            .position(coordinate)
+                            .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("ic_person", 300, 300))));
+
                     getMap().moveCamera(yourLocation);
+
                     firstOpen = false;
 
                 } else {
                     getMap().animateCamera(yourLocation);
+                    animateMarker(myLocation, coordinate, false);
+                    //GrabbleApplication.getAppContext(getApplicationContext())myLocation
+                }
+                for (Marker i : getNearestNMarkers(5, coordinate)) {
+                    if (!collected.containsKey(i.getTitle()))
+                        i.setVisible(true);
                 }
             }
 
@@ -229,30 +314,19 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-//        Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-//        if (lastKnownLocation !=null){
-//            double latitude = lastKnownLocation.getLatitude();
-//            double longitude = lastKnownLocation.getLongitude();
-//            LatLng coordinate = new LatLng(latitude, longitude);
-//            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 20);
-//            getMap().animateCamera(yourLocation);
-//        }
-
-
-        //enableMyLocation();
-
 
         KmlLayer kmlLayer = null;
+        String letterMap = GrabbleApplication.getAppContext(getApplicationContext()).getWebModel().getLetterMap();
+        InputStream letterMapStream = new ByteArrayInputStream(letterMap.getBytes());
         try {
-            kmlLayer = new KmlLayer(getMap(), R.raw.campus, getApplicationContext());
+            kmlLayer = new KmlLayer(getMap(), letterMapStream, getApplicationContext());
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         collected = GrabbleApplication.getAppContext(getApplication()).getDataHolder().getCollected();
+
         for (KmlPlacemark placeMark : kmlLayer.getPlacemarks()) {
 
             KmlGeometry g = placeMark.getGeometry();
@@ -265,17 +339,18 @@ public class MainActivity extends AppCompatActivity
                                 .position(point)
                                 .title(placeMark.getProperty("name"))
                                 .snippet(placeMark.getProperty("description"))
-                                //.icon(BitmapDescriptorFactory.defaultMarker()));
                                 .icon(BitmapDescriptorFactory.fromResource(
                                         getResources().getIdentifier(
                                                 "marker_" + placeMark.getProperty("description").toLowerCase(),
                                                 "drawable",
                                                 this.getPackageName()
                                         )
-                                ))
+                                )).visible(false)
 
                         );
                         marker.setTag(placeMark.getProperty("description").toLowerCase());
+                        markerList.add(marker);
+
                     }
 
                 } else {
@@ -287,7 +362,12 @@ public class MainActivity extends AppCompatActivity
 
             }
 
+
         }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
+
     }
 
 
@@ -325,7 +405,9 @@ public class MainActivity extends AppCompatActivity
 
         Bundle args = new Bundle();
 
-
+        if (marker.getTag() == null) {
+            return false;
+        }
         FragmentManager fm = getFragmentManager();
         InfoDialog dialogFragment = new InfoDialog();
         dialogFragment.setMarker(marker);

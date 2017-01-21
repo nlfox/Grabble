@@ -1,0 +1,26 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="233333">
+
+    <PreferenceCategory
+        android:title="Game setting">
+
+        <CheckBoxPreference
+            android:key="hard_mode"
+            android:title="Hard mode"
+            android:summary="Enable hard mode to get more score" />
+        <CheckBoxPreference
+            android:key="night_mode"
+            android:title="Night mode"
+            android:summary="Enable night to protect your eyes" />
+        <Preference
+            android:id= "@+id/logout"
+            android:title="Logout"
+            android:key="logout"
+            android:summary="Logout current account"/>
+
+        <!-- The visual style of a child is defined by this styled theme attribute. -->
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

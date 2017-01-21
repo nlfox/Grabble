@@ -1,12 +1,16 @@
 package com.example.nlfox.grabble;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.akexorcist.roundcornerprogressbar.IconRoundCornerProgressBar;
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
 
 /**
@@ -51,6 +55,8 @@ public class PlayerInfoFragment extends Fragment {
         return fragment;
     }
 
+    View rootView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,12 +64,29 @@ public class PlayerInfoFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        rootView = inflater.inflate(R.layout.fragment_player_info, container, false);
+        IconRoundCornerProgressBar prog_cnt = (IconRoundCornerProgressBar) rootView.findViewById(R.id.count_progress);
+        DataHolder dataHolder = DataHolder.getInstance();
+        float max = (float)
+                Math.pow(
+                        2.0,
+                        Math.ceil(
+                                Math.log(dataHolder.getCount().doubleValue()) / Math.log(2.0))
+
+                );
+
+        prog_cnt.setProgress(0);
+        prog_cnt.setProgress(prog_cnt.getProgress()+((dataHolder.getCount().floatValue() * 100) / max));
+
+        IconRoundCornerProgressBar progress2 = (IconRoundCornerProgressBar) rootView.findViewById(R.id.progress_2);
         return inflater.inflate(R.layout.fragment_player_info, container, false);
     }
 

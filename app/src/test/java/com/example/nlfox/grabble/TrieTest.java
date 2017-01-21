@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -24,15 +25,21 @@ public class TrieTest {
 
     @Test
     public void serialize() throws Exception {
-        assertEquals(getFile("serialized.txt").trim(),t.serialize());
+        assertEquals(getFile("serialized.txt").trim(), t.serialize());
     }
 
+
+    @Test
+    public void suggest() {
+        assertArrayEquals(t.getSuggestion("holi").toArray(),new String[]{"holiday"});
+        //System.out.println(t.getSuggestion("holi"));
+    }
 
     @Test
     public void deserialize() throws Exception {
 
         Trie t1 = new Trie(getFile("serialized.txt"));
-        assertEquals(t1.validWord("holiday"),true);
+        assertEquals(t1.validWord("holiday"), true);
     }
 
     String dict;
@@ -50,7 +57,7 @@ public class TrieTest {
     public void setUp() throws Exception {
         String s = getFile("grabble.txt");
         t = new Trie();
-        for (String line : s.split("\n")){
+        for (String line : s.split("\n")) {
             t.addString(line.trim().toLowerCase());
         }
 

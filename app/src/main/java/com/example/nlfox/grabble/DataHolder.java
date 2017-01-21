@@ -14,6 +14,8 @@ public class DataHolder {
 
     private Map<Character, Integer> letters;
     private Map<String, Boolean> collected;
+    private Integer count;
+    private Integer total_distance;
 
     public String toString() {
         return letters.toString();
@@ -39,7 +41,7 @@ public class DataHolder {
         collected.put(point, true);
     }
 
-    public Map<String, Boolean> getCollected(){
+    public Map<String, Boolean> getCollected() {
         return collected;
     }
 
@@ -59,10 +61,23 @@ public class DataHolder {
 
     private static final DataHolder holder = new DataHolder();
 
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public Integer getTotalDistance() {
+        return total_distance;
+    }
+
+
+
     public void initialize(LinkedTreeMap m) {
         collected = (Map<String, Boolean>) m.get("collected");
         Map<String, Double> letters_before = (Map<String, Double>) m.get("letter");
-        letters = new HashMap<Character, Integer>();
+        count = ((Double) m.get("count")).intValue();
+        total_distance = ((Double) m.get("distance")).intValue();
+        letters = new HashMap<>();
         for (String i : letters_before.keySet()) {
             letters.put(i.charAt(0), letters_before.get(i).intValue());
         }

@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/action_refresh"
+    <item
+        android:id="@+id/action_refresh"
+        android:enabled="true"
         android:icon="@mipmap/ic_refresh"
+        android:onClick="onItemClicked"
         android:title="Refresh"
         android:visible="true"
-        android:enabled="true"
-        android:onClick="onItemClicked"
-        app:showAsAction="ifRoom"
+        app:showAsAction="ifRoom" />
 
-        />
+    <item
+        android:id="@+id/action_suggest"
+        android:enabled="true"
+        android:icon="@drawable/ic_suggest"
+        android:onClick="onRequestSuggest"
+        android:title="Refresh"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
+
 </menu>

@@ -3,6 +3,7 @@ package com.example.nlfox.grabble;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -316,7 +317,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     return true;
                 } else {
-                    errmsg = "server error";
+                    errmsg = "New user, an account is created, please login again.";
                     return false;
                 }
             } else {
@@ -334,8 +335,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-
-                finish();
+                Intent intent = new Intent(getBaseContext(), SplashActivity.class);
+                startActivity(intent);
             } else {
                 mPasswordView.setError(errmsg);
                 mPasswordView.requestFocus();

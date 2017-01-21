@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import mbanje.kurt.fabbutton.FabButton;
@@ -27,9 +28,13 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
     private DataHolder dataHolder;
     private String word;
     private FabButton fabSubmit;
+    private Trie t;
 
     private void resetCharList() {
+        t = GrabbleApplication.getAppContext(getApplicationContext()).getTrie();
         ((ViewGroup) findViewById(R.id.topleft)).removeAllViews();
+        ((ViewGroup) findViewById(R.id.suggestion1)).removeAllViews();
+        ((ViewGroup) findViewById(R.id.suggestion2)).removeAllViews();
         Map<Character, Integer> letter_map = DataHolder.getInstance().getLetters();
         for (char i : letter_map.keySet()) {
             for (int j = 0; j < letter_map.get(i); j++) {
@@ -43,6 +48,46 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
                 imageView.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    public void onRequestSuggest(MenuItem item) {
+
+        ((ViewGroup) findViewById(R.id.suggestion1)).removeAllViews();
+        ((ViewGroup) findViewById(R.id.suggestion2)).removeAllViews();
+        Boolean pre = true;
+        String w = "";
+        for (int i = 1; i <= 7; i++) {
+            View v = findViewById(getResources().getIdentifier("slot" + Integer.toString(i), "id", this.getPackageName()));
+            if (v.getTag().toString().equals("-1")) {
+                if (pre)
+                    pre = false;
+                continue;
+            }
+            if (!pre && !v.getTag().toString().equals("-1")) {
+                showSnackbar("Invalid");
+                return;
+            }
+            w += v.getTag().toString();
+        }
+        List<String> s = t.getSuggestion(w);
+        if (s == null) {
+            showSnackbar("No word with the prefix.");
+            return;
+        }
+        for (int i = 0; i < s.size(); i++) {
+            ViewGroup v = (ViewGroup) findViewById(getResources().getIdentifier("suggestion" + Integer.toString(i + 1), "id", this.getPackageName()));
+            v.removeAllViews();
+            for (Character j : s.get(i).toCharArray()) {
+                ImageView imageView = new ImageView(getBaseContext());
+                imageView.setTag(j);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen.imageview_width), (int) getResources().getDimension(R.dimen.imageview_height));
+                imageView.setLayoutParams(layoutParams);
+                imageView.setImageResource(getResources().getIdentifier("letter_" + Character.toString(j), "drawable", this.getPackageName()));
+                v.addView(imageView);
+                imageView.setVisibility(View.VISIBLE);
+            }
+        }
+
     }
 
     private void initBlank(Boolean first) {
@@ -107,7 +152,7 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
             }
             word += v.getTag().toString();
         }
-        if (error) {
+        if (error || !t.validWord(word)) {
             showSnackbar("Wrong word. Try again");
             word = "";
             initBlank(false);
@@ -147,10 +192,14 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
         protected Boolean doInBackground(Object... params) {
             try {
 
-                return GrabbleApplication.getAppContext(getApplication()).makeWord(word);
+                GrabbleApplication.getAppContext(getApplication()).makeWord(word);
+//                GrabbleApplication.getAppContext(getApplication()).updateScoreboard();
+
             } catch (IOException e) {
+                showSnackbar("Network Error. Try again later");
                 return false;
             }
+            return true;
         }
 
 

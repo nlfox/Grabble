@@ -4,6 +4,7 @@ package com.example.nlfox.grabble;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -42,8 +43,15 @@ public class Trie {
     Trie() {
         head = new Node();
     }
-    Trie(String s){
+
+    Trie(String s) {
         head = deserialize(s);
+    }
+
+
+    Trie(InputStream is) {
+        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+        head = deserialize((s.hasNext() ? s.next() : "").trim());
     }
 
 
@@ -133,6 +141,52 @@ public class Trie {
 
         return root;
     }
+
+    private Node getNode(String s) {
+        Node n = head;
+
+        for (Character i :
+                s.toCharArray()) {
+            if (n.children.containsKey(i)) {
+                n = n.getChild(i);
+            } else {
+                return null;
+            }
+        }
+
+
+        return n;
+    }
+
+    int cnt = 0;
+    List<String> l;
+
+    public List<String> getSuggestion(String s) {
+        l = new ArrayList<>();
+        cnt = 0;
+        Node n = getNode(s);
+        if (n != null) {
+            dfs(s, n);
+        } else {
+            return l;
+        }
+
+        return l;
+    }
+
+    private void dfs(String s, Node n) {
+        if (cnt == 2) {
+            return;
+        }
+        if (n.children.size() == 0) {
+            l.add(s);
+            cnt += 1;
+        }
+        for (Map.Entry<Character, Node> i : n.children.entrySet()) {
+            dfs((s + i.getKey().toString()), i.getValue());
+        }
+    }
+
 
 //    public static void main(String[] args) {
 //        Trie t = new Trie();
