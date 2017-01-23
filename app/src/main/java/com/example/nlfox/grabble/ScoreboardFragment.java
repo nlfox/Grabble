@@ -66,7 +66,12 @@ public class ScoreboardFragment extends Fragment {
             @Override
             public void onRefresh() {
                 // Refresh items
-                refreshItems();
+                try {
+                    GrabbleApplication.getAppContext(getActivity().getApplicationContext()).updateScoreboard();
+
+                } catch (Exception e) {
+                    Utils.buildAlertBox(getActivity(),()->{});
+                }
             }
 
             void refreshItems() {

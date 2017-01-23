@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity
     private boolean mPermissionDenied = false;
 
     private GoogleMap mMap;
-    private boolean firstOpen = true;
     private Map<String, Boolean> collected;
     private List<Marker> markerList;
 
@@ -89,29 +88,25 @@ public class MainActivity extends AppCompatActivity
      */
 
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == 1) {
-            if (resultCode == Activity.RESULT_OK) {
-                String result = data.getStringExtra("result");
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                //Write your code if there's no result
-            }
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent i = getIntent();
+
+        // Get initial location from splash screen
+
         firstLocation = ((Bundle) i.getParcelableExtra("bundle")).getParcelable("position");
 
         setContentView(R.layout.activity_main);
+
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+
         mapFragment.getMapAsync(this);
+
         FloatingActionButton grabbleBtn = (FloatingActionButton) findViewById(R.id.grabble);
+
         grabbleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,6 +114,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+
         FloatingActionButton settingButton = (FloatingActionButton) findViewById(R.id.settings);
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +126,7 @@ public class MainActivity extends AppCompatActivity
 
 
     }
-
+    // calculate distance between two latlng
     private float distanceBetween(LatLng latLng1, LatLng latLng2) {
 
         Location loc1 = new Location(LocationManager.GPS_PROVIDER);
@@ -146,6 +142,7 @@ public class MainActivity extends AppCompatActivity
         return loc1.distanceTo(loc2);
     }
 
+    // get nearest n markers
     public List<Marker> getNearestNMarkers(int n, LatLng pos) {
         PriorityQueue<Marker> m = new PriorityQueue<Marker>(n, (p, q) -> {
             float dist = distanceBetween(p.getPosition(), pos) - distanceBetween(q.getPosition(), pos);
@@ -168,6 +165,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    // animate marker to position. from http://stackoverflow.com/questions/13872803/how-to-animate-marker-in-android-map-api-v2
     public void animateMarker(final Marker marker, final LatLng toPosition,
                               final boolean hideMarker) {
         final Handler handler = new Handler();
@@ -202,6 +200,8 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+
+    // request for location permission again
     private void requestLocationPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) && ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -218,10 +218,10 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    //
     public Bitmap resizeMapIcons(String iconName, int width, int height) {
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "mipmap", getPackageName()));
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
-        return resizedBitmap;
+        return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
     }
 
     @Override

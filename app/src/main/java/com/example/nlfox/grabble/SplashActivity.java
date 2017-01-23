@@ -60,8 +60,8 @@ public class SplashActivity extends AppCompatActivity {
         if (count == 3 && finish) {
             Intent intent = new Intent(getBaseContext(), MainActivity.class);
             Bundle args = new Bundle();
-            args.putParcelable("position",coordinate);
-            intent.putExtra("bundle",args);
+            args.putParcelable("position", coordinate);
+            intent.putExtra("bundle", args);
             startActivity(intent);
             finish();
         }
@@ -192,21 +192,9 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         // show a alert dialog for network error
-                        new AlertDialog.Builder(SplashActivity.this)
-                                .setTitle("Network Error")
-                                .setMessage("Network Error")
-                                .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        new InitTask().execute();
-                                    }
-                                })
-                                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                        finish();
-                                    }
-                                })
-                                .show();
+                        Utils.buildAlertBox(SplashActivity.this, () -> {
+                            new InitTask().execute();
+                        }).show();
                     }
                 });
                 return false;
@@ -219,7 +207,7 @@ public class SplashActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean result) {
             if (result)
                 moveProgressBar(true);
-                splashText.setText("Loading Map...");
+            splashText.setText("Loading Map...");
 
         }
 

@@ -114,13 +114,7 @@ public class InfoDialog extends DialogFragment implements View.OnClickListener {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle("Network Error")
-                                .setMessage("Network Error")
-                                .setPositiveButton("Retry", (dialog, which) -> new CollectLetterTask().execute())
-                                .setNegativeButton("Exit", (dialog, which) -> getActivity().finish())
-                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                .show();
+                        Utils.buildAlertBox(getActivity(), () -> new CollectLetterTask().execute()).show();
                     }
                 });
                 return false;

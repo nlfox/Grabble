@@ -90,21 +90,15 @@ public class GrabbleApplication extends Application {
         return true;
     }
 
-    void updateScoreboard() {
-        try {
-            scoreItems = webModel.getScoreboardItem();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    void updateScoreboard() throws Exception {
+
+        scoreItems = webModel.getScoreboardItem();
+
     }
 
     List<ScoreboardContent.ScoreItem> scoreItems;
 
     Boolean ready = false;
-
-    Boolean isReady() {
-        return ready;
-    }
 
     public void initialize() throws Exception {
 
