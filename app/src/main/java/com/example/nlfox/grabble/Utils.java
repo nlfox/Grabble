@@ -18,4 +18,6 @@ class Utils {
                 .setPositiveButton("Retry", (dialog, which) -> a.run())
                 .setNegativeButton("Exit", (dialog, which) -> c.finish());
     }
+
+
 }

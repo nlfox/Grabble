@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.IconRoundCornerProgressBar;
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
@@ -73,21 +74,28 @@ public class PlayerInfoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_player_info, container, false);
-        IconRoundCornerProgressBar prog_cnt = (IconRoundCornerProgressBar) rootView.findViewById(R.id.count_progress);
+//        IconRoundCornerProgressBar prog_cnt = (IconRoundCornerProgressBar) rootView.findViewById(R.id.count_progress);
+
+//        prog_cnt.setProgress(0);
+//        prog_cnt.setProgress(prog_cnt.getProgress()+((dataHolder.getCount().floatValue() * 100) / max));
+//
+//        IconRoundCornerProgressBar progress2 = (IconRoundCornerProgressBar) rootView.findViewById(R.id.progress_2);
+
         DataHolder dataHolder = DataHolder.getInstance();
-        float max = (float)
-                Math.pow(
-                        2.0,
-                        Math.ceil(
-                                Math.log(dataHolder.getCount().doubleValue()) / Math.log(2.0))
+        float max = (float) Math.pow(2.0, Math.ceil(Math.log(dataHolder.getCount().doubleValue()) / Math.log(2.0)));
+        TextView letter_level = (TextView) rootView.findViewById(R.id.letter_level);
+        TextView letter_next = (TextView) rootView.findViewById(R.id.letter_next);
+        TextView distance_level = (TextView) rootView.findViewById(R.id.distance_level);
+        TextView distance_next = (TextView) rootView.findViewById(R.id.distance_next);
+        Integer level1 = (Integer) Math.round((float) (Math.log(max) / Math.log(2.0)));
+        level1 += 1;
+        letter_level.setText(
+                "Level " + level1.toString()
+        );
+        letter_next.setText(dataHolder.getCount().toString() + "/" + ((Integer) Math.round(max)+1));
 
-                );
 
-        prog_cnt.setProgress(0);
-        prog_cnt.setProgress(prog_cnt.getProgress()+((dataHolder.getCount().floatValue() * 100) / max));
-
-        IconRoundCornerProgressBar progress2 = (IconRoundCornerProgressBar) rootView.findViewById(R.id.progress_2);
-        return inflater.inflate(R.layout.fragment_player_info, container, false);
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -100,6 +108,7 @@ public class PlayerInfoFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {

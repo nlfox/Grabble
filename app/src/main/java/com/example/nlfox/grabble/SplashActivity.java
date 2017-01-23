@@ -2,7 +2,6 @@ package com.example.nlfox.grabble;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -11,26 +10,18 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class SplashActivity extends AppCompatActivity {
 
     int count = 0;
     RoundCornerProgressBar splashProgbar;
     LatLng coordinate;
+    LocationManager locationManager;
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
             double latitude = location.getLatitude();
@@ -39,7 +30,9 @@ public class SplashActivity extends AppCompatActivity {
             // First time move the progressBar when first location is get.
             moveProgressBar(false);
             // Then call the next step
+            locationManager.removeUpdates(this);
             isFirstLogin();
+
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -57,14 +50,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void moveProgressBar(boolean finish) {
         splashProgbar.setProgress(splashProgbar.getProgress() + 30.0f);
         count += 1;
-        if (count == 3 && finish) {
-            Intent intent = new Intent(getBaseContext(), MainActivity.class);
-            Bundle args = new Bundle();
-            args.putParcelable("position", coordinate);
-            intent.putExtra("bundle", args);
-            startActivity(intent);
-            finish();
-        }
     }
 
 
@@ -92,7 +77,7 @@ public class SplashActivity extends AppCompatActivity {
         } else {
 
             // Init the location Manager (We are granted to have location permission here)
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             // Request update
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
@@ -152,6 +137,7 @@ public class SplashActivity extends AppCompatActivity {
     // check login
 
     protected void isFirstLogin() {
+
         // if first start, go to login activity
         if (GrabbleApplication.getAppContext(getApplication()).getWebModel().has_token()) {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -182,6 +168,8 @@ public class SplashActivity extends AppCompatActivity {
 
 
     private class InitTask extends AsyncTask<Object, Void, Boolean> {
+
+        @Override
         protected Boolean doInBackground(Object... params) {
             try {
                 // call the singleton progress and to initialize using the data from the server side
@@ -205,9 +193,16 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if (result)
+            if (result) {
                 moveProgressBar(true);
-            splashText.setText("Loading Map...");
+                splashText.setText("Loading Map...");
+                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                Bundle args = new Bundle();
+                args.putParcelable("position", coordinate);
+                intent.putExtra("bundle", args);
+                startActivity(intent);
+                finish();
+            }
 
         }
 
