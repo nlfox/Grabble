@@ -1,4 +1,4 @@
-package com.example.nlfox.grabble.dummy;
+package com.example.nlfox.grabble;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,41 +1,24 @@
 package com.example.nlfox.grabble;
 
 import android.app.DialogFragment;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.google.android.gms.maps.model.Marker;
 
-import java.io.IOException;
-import java.net.URL;
-
 import mbanje.kurt.fabbutton.FabButton;
-
-import static android.os.SystemClock.sleep;
-
 
 /**
  * Created by nlfox on 16-10-25.
  */
-
-
-import android.app.Activity;
-import android.os.Handler;
-
-import mbanje.kurt.fabbutton.FabButton;
 
 public class InfoDialog extends DialogFragment implements View.OnClickListener {
     private Marker marker;

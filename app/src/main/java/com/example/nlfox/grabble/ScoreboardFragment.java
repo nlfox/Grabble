@@ -11,10 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.nlfox.grabble.dummy.ScoreboardContent;
-
-import java.util.List;
-
 /**
  * A fragment representing a list of Items.
  * <p/>

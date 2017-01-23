@@ -1,11 +1,13 @@
 package com.example.nlfox.grabble;
 
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * Created by nlfox on 1/14/17.
@@ -82,17 +84,12 @@ public class Trie {
 
     }
 
-    /**
-     * This method will be invoked first, you should design your own algorithm
-     * to serialize a trie which denote by a root node to a string which
-     * can be easily deserialized by your own "deserialize" method later.
-     */
     public String serialize() {
         return serialize(head);
     }
 
     public String serialize(Node root) {
-        // Write your code here
+
         if (root == null)
             return "";
 
@@ -110,15 +107,8 @@ public class Trie {
         return sb.toString();
     }
 
-    /**
-     * This method will be invoked second, the argument data is what exactly
-     * you serialized at method "serialize", that means the data is not given by
-     * system, it's given by your own serialize method. So the format of data is
-     * designed by yourself, and deserialize it here as you serialize it in
-     * "serialize" method.
-     */
+
     public Node deserialize(String data) {
-        // Write your code here
         if (data == null || data.length() == 0)
             return null;
 
@@ -188,12 +178,5 @@ public class Trie {
     }
 
 
-//    public static void main(String[] args) {
-//        Trie t = new Trie();
-//        //
-//
-//        System.out.println(t.serialize()); // Display the string.
-//
-//    }
 
 }

@@ -1,9 +1,5 @@
 package com.example.nlfox.grabble;
 
-import android.content.SharedPreferences;
-
-import com.example.nlfox.grabble.dummy.ScoreboardContent;
-import com.google.android.gms.maps.model.Marker;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -16,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Pair;
 
 import okhttp3.FormBody;
@@ -116,6 +111,9 @@ public class WebModel {
     }
 
     public String getWeekDay(){
+        // http://stackoverflow.com/questions/18256521/android-calendar-get-current-day-of-week-as-string
+
+
         String weekDay = "";
 
         Calendar c = Calendar.getInstance();
@@ -139,7 +137,6 @@ public class WebModel {
         return weekDay;
     }
     void downloadLetterMap() throws IOException {
-        // http://stackoverflow.com/questions/18256521/android-calendar-get-current-day-of-week-as-string
 
         letterMap = get("http://www.inf.ed.ac.uk/", "teaching/courses/selp/coursework/" + getWeekDay() + ".kml");
         SpUtils.putString(c,"letterMap_"+getWeekDay(),letterMap);

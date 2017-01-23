@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 /**
  * Utility class for access to runtime permissions.
+ * from https://gist.github.com/tatocaster/b4a5c5834208b94e7548295b6c98b187
  */
 public abstract class PermissionUtils {
 

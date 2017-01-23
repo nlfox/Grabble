@@ -6,17 +6,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.example.nlfox.grabble.dummy.ScoreboardContent;
-import com.google.android.gms.maps.model.Marker;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
 
 /**
  * Created by nlfox on 12/23/16.
