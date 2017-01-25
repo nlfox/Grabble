@@ -39,6 +39,7 @@ public class DataHolder {
     public void collectPoint(String letter, String point) {
         addLetter(letter.charAt(0));
         collected.put(point, true);
+        count+=1;
     }
 
     public Map<String, Boolean> getCollected() {

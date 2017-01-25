@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,156 +9,238 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-    <org.apmem.tools.layouts.FlowLayout xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.6"
-        android:layout_gravity="center"
-        android:background="@color/colorPrimary"
-        android:elevation="23dp">
 
-        <LinearLayout
-            android:id="@+id/topright"
+        <org.apmem.tools.layouts.FlowLayout xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="1"
-            android:background="@color/black_overlay"
-            android:gravity="center">
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="0.6"
+            android:background="@color/colorPrimary"
+            android:elevation="23dp">
 
-            <ImageView
-                android:id="@+id/slot1"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription=""
-                app:srcCompat="@mipmap/ic_round" />
-
-            <ImageView
-                android:id="@+id/slot2"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription=""
-                app:srcCompat="@mipmap/ic_round" />
-
-            <ImageView
-                android:id="@+id/slot3"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription=""
-                app:srcCompat="@mipmap/ic_round" />
-
-            <ImageView
-                android:id="@+id/slot4"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription=""
-                app:srcCompat="@mipmap/ic_round" />
-
-            <ImageView
-                android:id="@+id/slot5"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription=""
-                app:srcCompat="@mipmap/ic_round" />
-
-            <ImageView
-                android:id="@+id/slot6"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription=""
-                app:srcCompat="@mipmap/ic_round" />
-
-            <ImageView
-                android:id="@+id/slot7"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription=""
-                app:srcCompat="@mipmap/ic_round" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/suggestion1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="1"
-            android:background="@color/black_overlay"
-            android:gravity="center"
-            android:orientation="horizontal" />
-
-        <LinearLayout
-            android:id="@+id/suggestion2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="1"
-            android:background="@color/black_overlay"
-            android:gravity="center"
-            android:orientation="horizontal" />
-
-
-
-    </org.apmem.tools.layouts.FlowLayout>
-
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/body"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.4"
-        android:layout_gravity="center"
-        card_view:cardCornerRadius="4dp">
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-             >
-
-            <org.apmem.tools.layouts.FlowLayout
-                android:id="@+id/topleft"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_marginRight="50dp"
                 android:layout_height="wrap_content"
-                android:layout_column="0">
+                android:layout_column="0"
+                android:layout_row="1"
+                android:orientation="vertical">
 
-            </org.apmem.tools.layouts.FlowLayout>
-        </ScrollView>
-    </android.support.v7.widget.CardView>
+                <LinearLayout
+                    android:id="@+id/topright"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/black_overlay"
+                    android:gravity="center">
+
+
+                    <ImageView
+                        android:id="@+id/slot1"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:contentDescription=""
+                        app:srcCompat="@mipmap/ic_round" />
+
+                    <ImageView
+                        android:id="@+id/slot2"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:contentDescription=""
+                        app:srcCompat="@mipmap/ic_round" />
+
+                    <ImageView
+                        android:id="@+id/slot3"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:contentDescription=""
+                        app:srcCompat="@mipmap/ic_round" />
+
+                    <ImageView
+                        android:id="@+id/slot4"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:contentDescription=""
+                        app:srcCompat="@mipmap/ic_round" />
+
+                    <ImageView
+                        android:id="@+id/slot5"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:contentDescription=""
+                        app:srcCompat="@mipmap/ic_round" />
+
+                    <ImageView
+                        android:id="@+id/slot6"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:contentDescription=""
+                        app:srcCompat="@mipmap/ic_round" />
+
+                    <ImageView
+                        android:id="@+id/slot7"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:contentDescription=""
+                        app:srcCompat="@mipmap/ic_round" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/downright"
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/score1"
+                        android:layout_width="48dp"
+                        android:layout_height="15dp"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:textColor="@color/cardview_light_background" />
+                    <TextView
+                        android:id="@+id/score2"
+                        android:layout_width="48dp"
+                        android:layout_height="15dp"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:textColor="@color/cardview_light_background" />
+                    <TextView
+                        android:id="@+id/score3"
+                        android:layout_width="48dp"
+                        android:layout_height="15dp"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:textColor="@color/cardview_light_background" />
+                    <TextView
+                        android:id="@+id/score4"
+                        android:layout_width="48dp"
+                        android:layout_height="15dp"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:textColor="@color/cardview_light_background" />
+                    <TextView
+                        android:id="@+id/score5"
+                        android:layout_width="48dp"
+                        android:layout_height="15dp"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:textColor="@color/cardview_light_background" />
+                    <TextView
+                        android:id="@+id/score6"
+                        android:layout_width="48dp"
+                        android:layout_height="15dp"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:textColor="@color/cardview_light_background" />
+                    <TextView
+                        android:id="@+id/score7"
+                        android:layout_width="48dp"
+                        android:layout_height="15dp"
+                        android:text="0"
+                        android:textSize="12sp"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:textColor="@color/cardview_light_background" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/suggestion1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:background="@color/black_overlay"
+                android:gravity="center"
+                android:orientation="horizontal" />
+
+            <LinearLayout
+                android:id="@+id/suggestion2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:background="@color/black_overlay"
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+            </LinearLayout>
+
+
+        </org.apmem.tools.layouts.FlowLayout>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/body"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="0.4"
+            card_view:cardCornerRadius="4dp">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <org.apmem.tools.layouts.FlowLayout
+                    android:id="@+id/topleft"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_marginRight="50dp">
+
+                </org.apmem.tools.layouts.FlowLayout>
+            </ScrollView>
+        </android.support.v7.widget.CardView>
 
     </LinearLayout>
 
     <!--<android.support.design.widget.FloatingActionButton-->
 
-        <!---->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--app:layout_anchor="@id/header"-->
-        <!--app:layout_anchorGravity="bottom|right|end"-->
-        <!--app:elevation="24dp"-->
-        <!--app:srcCompat="@drawable/ic_check_black_24dp" />-->
+    <!---->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--app:layout_anchor="@id/header"-->
+    <!--app:layout_anchorGravity="bottom|right|end"-->
+    <!--app:elevation="24dp"-->
+    <!--app:srcCompat="@drawable/ic_check_black_24dp" />-->
 
     <view
+        android:id="@+id/scrabble_submit"
+        class="mbanje.kurt.fabbutton.FabButton"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        class="mbanje.kurt.fabbutton.FabButton"
-        android:id="@+id/scrabble_submit"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:layout_gravity="center"
-        android:paddingRight="5dp"
         android:clickable="true"
         android:color="@color/colorAccent"
-        android:src="@mipmap/ic_makeword"
-        android:visibility="visible"
         android:indeterminate="false"
         android:max="100"
-        app:layout_anchor="@id/header"
-        app:layout_anchorGravity="bottom|right|end"
+        android:paddingRight="5dp"
+        android:src="@mipmap/ic_makeword"
+        android:visibility="visible"
         app:elevation="24dp"
         app:fbb_autoStart="true"
+        app:fbb_endBitmap="@drawable/ic_fab_complete"
         app:fbb_progressColor="#ff170aff"
         app:fbb_progressWidthRatio="0.1"
-        app:fbb_endBitmap="@drawable/ic_fab_complete"
         app:fbb_showEndBitmap="true"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        app:layout_anchor="@id/header"
+        app:layout_anchorGravity="bottom|right|end" />
 
 </android.support.design.widget.CoordinatorLayout>

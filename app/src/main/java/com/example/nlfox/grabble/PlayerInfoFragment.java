@@ -69,6 +69,12 @@ public class PlayerInfoFragment extends Fragment {
 
     }
 
+    DataHolder dataHolder;
+    TextView letter_level;
+    TextView letter_next;
+    TextView distance_level;
+    TextView distance_next;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -81,19 +87,18 @@ public class PlayerInfoFragment extends Fragment {
 //
 //        IconRoundCornerProgressBar progress2 = (IconRoundCornerProgressBar) rootView.findViewById(R.id.progress_2);
 
-        DataHolder dataHolder = DataHolder.getInstance();
+        dataHolder = DataHolder.getInstance();
         float max = (float) Math.pow(2.0, Math.ceil(Math.log(dataHolder.getCount().doubleValue()) / Math.log(2.0)));
-        TextView letter_level = (TextView) rootView.findViewById(R.id.letter_level);
-        TextView letter_next = (TextView) rootView.findViewById(R.id.letter_next);
-        TextView distance_level = (TextView) rootView.findViewById(R.id.distance_level);
-        TextView distance_next = (TextView) rootView.findViewById(R.id.distance_next);
+        letter_level = (TextView) rootView.findViewById(R.id.letter_level);
+        letter_next = (TextView) rootView.findViewById(R.id.letter_next);
+        distance_level = (TextView) rootView.findViewById(R.id.distance_level);
+        distance_next = (TextView) rootView.findViewById(R.id.distance_next);
         Integer level1 = (Integer) Math.round((float) (Math.log(max) / Math.log(2.0)));
         level1 += 1;
         letter_level.setText(
                 "Level " + level1.toString()
         );
-        letter_next.setText(dataHolder.getCount().toString() + "/" + ((Integer) Math.round(max)+1));
-
+        letter_next.setText(dataHolder.getCount().toString() + "/" + ((Integer) Math.round(max) + 1));
 
         return rootView;
     }
@@ -115,6 +120,7 @@ public class PlayerInfoFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
     }
 
     @Override

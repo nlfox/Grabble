@@ -1,6 +1,7 @@
 package com.example.nlfox.grabble;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -10,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.io.IOException;
 
 /**
  * A fragment representing a list of Items.
@@ -53,43 +56,63 @@ public class ScoreboardFragment extends Fragment {
         }
     }
 
+    private class RefreshTask extends AsyncTask<Object, Void, Boolean> {
+        protected Boolean doInBackground(Object... params) {
+            try {
+                GrabbleApplication.getAppContext(getActivity().getApplication()).updateScoreboard();
+                getActivity().runOnUiThread(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                recyclerView.setAdapter(new MyItemRecyclerViewAdapter(GrabbleApplication.getAppContext(getActivity().getApplicationContext()).scoreItems, mListener));
+                            }
+                        }
+                );
+            } catch (Exception e) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utils.buildAlertBox(getActivity(), () -> new RefreshTask().execute()).show();
+                    }
+                });
+                return false;
+            }
+            return true;
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+
+    }
+
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_score_board, container, false);
-        SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) view;
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view;
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 // Refresh items
                 try {
-                    GrabbleApplication.getAppContext(getActivity().getApplicationContext()).updateScoreboard();
-
+                    new RefreshTask().execute();
                 } catch (Exception e) {
-                    Utils.buildAlertBox(getActivity(),()->{});
+                    Utils.buildAlertBox(getActivity(), () -> {
+                    });
                 }
             }
 
-            void refreshItems() {
-                // Load items
-                // ...
-
-                // Load complete
-                onItemsLoadComplete();
-            }
-
-            void onItemsLoadComplete() {
-                // Update the adapter and notify data set changed
-                // ...
-
-                // Stop refresh animation
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
         });
         // Set the adapter
         if (view.findViewById(R.id.list) instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+            recyclerView = (RecyclerView) view.findViewById(R.id.list);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -100,6 +123,7 @@ public class ScoreboardFragment extends Fragment {
         return view;
     }
 
+    RecyclerView recyclerView;
 
     @Override
     public void onAttach(Context context) {
@@ -132,6 +156,7 @@ public class ScoreboardFragment extends Fragment {
         // TODO: Update argument type and name
         void onListFragmentInteraction(ScoreboardContent.ScoreItem item);
     }
+
 
     public class ListListener implements OnListFragmentInteractionListener {
 

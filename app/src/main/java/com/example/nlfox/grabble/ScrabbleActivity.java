@@ -17,6 +17,9 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,11 +37,10 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
     // disable multi-touch in scrabble game
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(event.getPointerCount() > 1) {
+        if (event.getPointerCount() > 1) {
             System.out.println("Multitouch detected!");
             return true;
-        }
-        else
+        } else
             return super.onTouchEvent(event);
     }
 
@@ -81,7 +83,7 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
             }
             w += v.getTag().toString();
         }
-        Log.v("Sc",w);
+        Log.v("Sc", w);
         List<String> s = t.getSuggestion(w);
         if (s == null) {
             showSnackbar("No word with the prefix.");
@@ -91,7 +93,7 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
             ViewGroup v = (ViewGroup) findViewById(getResources().getIdentifier("suggestion" + Integer.toString(i + 1), "id", this.getPackageName()));
             v.removeAllViews();
             for (Character j : s.get(i).toCharArray()) {
-                Log.v("Sc",s.get(i));
+                Log.v("Sc", s.get(i));
                 ImageView imageView = new ImageView(getBaseContext());
                 imageView.setTag(j);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams((int) getResources().getDimension(R.dimen.imageview_width), (int) getResources().getDimension(R.dimen.imageview_height));
@@ -108,6 +110,8 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
         findViewById(R.id.topright).startAnimation(AnimationUtils.loadAnimation(ScrabbleActivity.this, R.anim.shake_light));
         for (int i = 1; i <= 7; i++) {
             View v = findViewById(getResources().getIdentifier("slot" + Integer.toString(i), "id", this.getPackageName()));
+            TextView vt = (TextView) findViewById(getResources().getIdentifier("score" + Integer.toString(i), "id", this.getPackageName()));
+            vt.setText("0");
             if (first) {
                 v.setOnDragListener(new ReplaceDragListener());
             } else {
@@ -256,6 +260,10 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
                     owner.removeView(srcView);
                     targetView.setImageDrawable(((ImageView) srcView).getDrawable());
                     targetView.setTag(srcView.getTag());
+                    String name =("score" + (targetView.getResources().getResourceName(targetView.getId())).substring(33));
+                    TextView v = (TextView) findViewById(getResources().getIdentifier(name, "id", getApplication().getPackageName()));
+                    v.setText(Utils.getLetterScore(srcView.getTag().toString()));
+
                     targetView.startAnimation(AnimationUtils.loadAnimation(ScrabbleActivity.this, R.anim.shake));
                 }
             }
