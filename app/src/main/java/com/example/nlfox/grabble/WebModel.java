@@ -25,7 +25,7 @@ import okhttp3.Response;
 
 public class WebModel {
     private static OkHttpClient client = null;
-    private static String site = "http://192.168.136.42:5000/";
+    private static String site = "http://138.68.1.13:5000";
     private static String token;
     private static String letterMap;
     private Context c;
