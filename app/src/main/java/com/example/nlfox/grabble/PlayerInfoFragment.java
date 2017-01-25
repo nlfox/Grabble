@@ -91,8 +91,6 @@ public class PlayerInfoFragment extends Fragment {
         float max = (float) Math.pow(2.0, Math.ceil(Math.log(dataHolder.getCount().doubleValue()) / Math.log(2.0)));
         letter_level = (TextView) rootView.findViewById(R.id.letter_level);
         letter_next = (TextView) rootView.findViewById(R.id.letter_next);
-        distance_level = (TextView) rootView.findViewById(R.id.distance_level);
-        distance_next = (TextView) rootView.findViewById(R.id.distance_next);
         Integer level1 = (Integer) Math.round((float) (Math.log(max) / Math.log(2.0)));
         level1 += 1;
         letter_level.setText(

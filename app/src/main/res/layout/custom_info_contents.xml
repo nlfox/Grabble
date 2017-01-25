@@ -46,7 +46,7 @@
                 android:paddingBottom="40dp"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
-                android:src="@drawable/letter_a" />
+                 />
 
 
         </org.apmem.tools.layouts.FlowLayout>

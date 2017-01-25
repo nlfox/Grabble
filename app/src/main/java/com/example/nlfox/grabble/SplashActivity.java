@@ -114,7 +114,7 @@ public class SplashActivity extends AppCompatActivity {
         if (grantResults.length > 0
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-            LocationManager locationManager = (LocationManager)
+            locationManager = (LocationManager)
                     getSystemService(Context.LOCATION_SERVICE);
 
             // Second check the permission
