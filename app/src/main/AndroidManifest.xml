@@ -41,7 +41,7 @@
 
         <activity
             android:name=".ScrabbleActivity"
-            android:label="@string/title_activity_scrabble"
+            android:label="Scrabble"
             android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".InfoActivity"

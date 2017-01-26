@@ -157,7 +157,7 @@ public class WebModel {
     }
 
     String post(String url, Map<String, String> paras) throws IOException {
-
+        //wrap post
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
 
         for (Map.Entry<String, String> entry : paras.entrySet()) {
@@ -176,6 +176,7 @@ public class WebModel {
     }
 
     public int register(String user, String password) {
+        //wrap register
         Map<String, String> m = new HashMap<>();
         m.put("username", user);
         m.put("password", password);
@@ -195,6 +196,7 @@ public class WebModel {
     }
 
     public int login(String user, String password) {
+        // wrap login
         Map<String, String> m = new HashMap<>();
         m.put("username", user);
         m.put("password", password);

@@ -27,6 +27,7 @@ import mbanje.kurt.fabbutton.FabButton;
 
 public class ScrabbleActivity extends AppCompatActivity implements View.OnClickListener {
 
+
     private DataHolder dataHolder;
     private String word;
     private FabButton fabSubmit;
@@ -68,6 +69,8 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
         ((ViewGroup) findViewById(R.id.suggestion2)).removeAllViews();
         Boolean pre = true;
         String w = "";
+
+        // get current word
         for (int i = 1; i <= 7; i++) {
             View v = findViewById(getResources().getIdentifier("slot" + Integer.toString(i), "id", this.getPackageName()));
             if (v.getTag().toString().equals("-1")) {
@@ -87,6 +90,8 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
             showSnackbar("No word with the prefix.");
             return;
         }
+
+        //display suggestion
         for (int i = 0; i < s.size(); i++) {
             ViewGroup v = (ViewGroup) findViewById(getResources().getIdentifier("suggestion" + Integer.toString(i + 1), "id", this.getPackageName()));
             v.removeAllViews();
@@ -103,7 +108,7 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
         }
 
     }
-
+    // reset current slots
     private void initBlank(Boolean first) {
         findViewById(R.id.topright).startAnimation(AnimationUtils.loadAnimation(ScrabbleActivity.this, R.anim.shake_light));
         for (int i = 1; i <= 7; i++) {
@@ -119,6 +124,7 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    //show snackbar
     private void showSnackbar(String msg) {
         Snackbar.make(findViewById(R.id.scrabble_submit), msg, Snackbar.LENGTH_LONG)
                 .setActionTextColor(Color.RED).show();
@@ -168,6 +174,8 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
             }
             word += v.getTag().toString();
         }
+        // get current word
+
         if (error || !t.validWord(word)) {
             showSnackbar("Wrong word. Try again");
             word = "";
@@ -186,6 +194,7 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
+    // when in drag action, just set original position invisible
     private final class MyTouchListener implements View.OnTouchListener {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -203,7 +212,7 @@ public class ScrabbleActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-
+    // the async task for collecting letter
     private class CollectLetterTask extends AsyncTask<Object, Void, Boolean> {
         protected Boolean doInBackground(Object... params) {
             try {

@@ -6,11 +6,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.Marker;
 
@@ -43,6 +45,8 @@ public class InfoDialog extends DialogFragment implements View.OnClickListener {
         rootView = inflater.inflate(R.layout.custom_info_contents, container, false);
         getDialog().setCancelable(true);
         getDialog().setTitle(marker.getTitle());
+
+
         letter = marker.getTag().toString();
         title = marker.getTitle();
         ImageView markerPic = (ImageView) rootView.findViewById(R.id.marker_pic);
@@ -51,8 +55,12 @@ public class InfoDialog extends DialogFragment implements View.OnClickListener {
                 "drawable", "com.example.nlfox.grabble"
         ));
         btn = (FabButton) rootView.findViewById(R.id.buttonCollect);
-        btn.setOnClickListener(this);
-
+        if (MainActivity.distanceBetween(marker.getPosition(), ((MainActivity) getActivity()).myLocationMarker.getPosition()) > 30) {
+            TextView v = (TextView) rootView.findViewById(R.id.point_text);
+            v.setText("Too far away");
+        } else {
+            btn.setOnClickListener(this);
+        }
         return rootView;
     }
 
@@ -66,7 +74,10 @@ public class InfoDialog extends DialogFragment implements View.OnClickListener {
         Handler handler = new Handler();
         Runnable r = new Runnable() {
             public void run() {
-                getActivity().getFragmentManager().beginTransaction().remove(myself).commit();
+                try {
+                    getActivity().getFragmentManager().beginTransaction().remove(myself).commit();
+                } catch (Exception e) {
+                }
                 Snackbar snackbar = Snackbar
                         .make(v, "a new letter collected", Snackbar.LENGTH_SHORT);
                 snackbar.setActionTextColor(Color.RED);

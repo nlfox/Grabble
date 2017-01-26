@@ -12,33 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.io.IOException;
-
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
 public class ScoreboardFragment extends Fragment {
 
-    // TODO: Customize parameters
     private int mColumnCount = 1;
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
 
     private OnListFragmentInteractionListener mListener;
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static ScoreboardFragment newInstance(int columnCount) {
-        ScoreboardFragment fragment = new ScoreboardFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -55,7 +36,7 @@ public class ScoreboardFragment extends Fragment {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
     }
-
+    // Async task for refreshing the scoreboard
     private class RefreshTask extends AsyncTask<Object, Void, Boolean> {
         protected Boolean doInBackground(Object... params) {
             try {
@@ -69,6 +50,7 @@ public class ScoreboardFragment extends Fragment {
                         }
                 );
             } catch (Exception e) {
+                //retry when network error
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -83,7 +65,7 @@ public class ScoreboardFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Boolean result) {
-
+            //stop animation
             mSwipeRefreshLayout.setRefreshing(false);
         }
 
@@ -142,27 +124,9 @@ public class ScoreboardFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(ScoreboardContent.ScoreItem item);
     }
 
 
-    public class ListListener implements OnListFragmentInteractionListener {
-
-        @Override
-        public void onListFragmentInteraction(ScoreboardContent.ScoreItem item) {
-            return;
-        }
-    }
 }

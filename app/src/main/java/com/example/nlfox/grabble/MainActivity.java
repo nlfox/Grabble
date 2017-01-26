@@ -83,10 +83,6 @@ public class MainActivity extends AppCompatActivity
         return mMap;
     }
 
-    /**
-     * Demonstrates customizing the info window and/or its contents.
-     */
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +124,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     // calculate distance between two latlng
-    private float distanceBetween(LatLng latLng1, LatLng latLng2) {
+    public static float distanceBetween(LatLng latLng1, LatLng latLng2) {
 
         Location loc1 = new Location(LocationManager.GPS_PROVIDER);
         Location loc2 = new Location(LocationManager.GPS_PROVIDER);
@@ -250,7 +246,7 @@ public class MainActivity extends AppCompatActivity
 
                 LatLng coordinate = new LatLng(latitude, longitude);
 
-                CameraUpdate myLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 19);
+                CameraUpdate myLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 20);
                 getMap().animateCamera(myLocation);
                 animateMarker(myLocationMarker, coordinate, false);
                 for (Marker i : getNearestNMarkers(5, coordinate)) {

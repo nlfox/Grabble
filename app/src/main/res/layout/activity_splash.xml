@@ -8,7 +8,10 @@
     android:gravity="bottom"
     android:orientation="vertical"
 
-    tools:context="com.example.nlfox.grabble.SplashActivity">
+    tools:context="com.example.nlfox.grabble.SplashActivity"
+    android:weightSum="1">
+
+
 
     <LinearLayout
 
