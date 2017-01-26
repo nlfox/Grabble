@@ -55,6 +55,7 @@ public class InfoDialog extends DialogFragment implements View.OnClickListener {
                 "drawable", "com.example.nlfox.grabble"
         ));
         btn = (FabButton) rootView.findViewById(R.id.buttonCollect);
+        // when too far, just remove the listener of the button
         if (MainActivity.distanceBetween(marker.getPosition(), ((MainActivity) getActivity()).myLocationMarker.getPosition()) > 30) {
             TextView v = (TextView) rootView.findViewById(R.id.point_text);
             v.setText("Too far away");
@@ -68,8 +69,7 @@ public class InfoDialog extends DialogFragment implements View.OnClickListener {
         marker.setVisible(false);
         btn.setIndeterminate(false);
         btn.setProgress(100);
-        //button.showProgress(false);
-        //sleep(3000);
+        // show snackbar after animation
         final InfoDialog myself = this;
         Handler handler = new Handler();
         Runnable r = new Runnable() {
@@ -92,13 +92,14 @@ public class InfoDialog extends DialogFragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         rootView.findViewById(R.id.marker_pic).startAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.shake));
+        // show animation
         btn.setIndeterminate(true);
         btn.showProgress(true);
         CollectLetterTask clt = new CollectLetterTask();
         clt.execute();
 
     }
-
+    // async collect letter task
     private class CollectLetterTask extends AsyncTask<Object, Void, Boolean> {
         protected Boolean doInBackground(Object... params) {
             try {
